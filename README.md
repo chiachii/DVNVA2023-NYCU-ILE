@@ -12,3 +12,6 @@ Data Visualization and Visual Analytics(2023) at National Yang Ming Chiao Tung U
 * **hw7:** Horizen Chart
 * **hw8:** Sankey Diagram
 * **hw9:** Spotiy Tracks Dataset
+
+## References
+[1] [Data Visualization with D3.js - Full Tutorial Course](https://www.youtube.com/watch?v=_8V5o2UHG0E)
