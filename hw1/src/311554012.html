@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Homework 1: Scatter Plots </title>
+    <link rel="stylesheet" href="./311554012.css">
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title"> 【112A】Data Visualization and Visual Analytics@NYCU </h1>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title"> Homework 1: Scatter Plots </p>
+            </header>
+            <div class="card-content">
+                <!-- main program -->
+                <div class="card-control-bar">
+                    <label for="x-axis-select"> X-Axis </label>
+                    <select id="x-axis-select"></select>
+                    <label id="x-axis-label"></label>
+                    <br>
+                    <label for="y-axis-select"> Y-Axis </label>
+                    <select id="y-axis-select"></select>
+                    <label id="y-axis-label"></label>
+                </div>
+                
+                <div id="scatter-plot"></div>
+                <div id="tooltip"></div>
+                <script src="./311554012.js"></script>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
