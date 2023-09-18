@@ -156,6 +156,12 @@ const render = data => {
             const cxValue = d[xAttribute]; // Use the data object directly to access the `cx` value
             const cyValue = d[yAttribute]; // Use the data object directly to access the `cy` value
             const classValue = d.class;
+            
+            // Highlight the point by changing its fill color
+            d3.select(this)
+                .transition()
+                .duration(100)
+                .style('fill', 'pink');
 
             // Show the values of X-Axis and Y-Axis
             xAxisLabel.text(`= ${cxValue}`);
@@ -167,6 +173,12 @@ const render = data => {
                 .html(`<strong>class:</strong> ${classValue}`);
         })
         .on('mouseout', function() {
+            // Change it back to the class-based color
+            d3.select(this)
+                .transition()
+                .duration(100)
+                .style('fill', d => colorScale(d.class));
+
             // Hide the values of X-Axis and Y-Axis
             xAxisLabel.text('');
             yAxisLabel.text('');
