@@ -71,20 +71,22 @@ const render = data => {
         .range([height, 0]);
 
     // Create X and Y axes
-    const xAxis = d3.axisBottom(xScale);
-    const yAxis = d3.axisLeft(yScale);
+    const xAxis = d3.axisBottom(xScale).tickSize(-height);
+    const yAxis = d3.axisLeft(yScale).tickSize(-width);
 
     // Append X and Y axes to the SVG
     svg.append('g')
         .style('font-size', '12px')
         .attr('class', 'x-axis')
         .attr('transform', `translate(0, ${height})`)
-        .call(xAxis);
+        .call(xAxis)
+        .style('color', '#9a9c9a');
 
     svg.append('g')
         .style('font-size', '12px')
         .attr('class', 'y-axis')
-        .call(yAxis);
+        .call(yAxis)
+        .style('color', '#9a9c9a');
 
     // Extract unique species for color mapping
     const species = [new Set(data.map(d => d.class))];
@@ -102,7 +104,7 @@ const render = data => {
         .attr('r', 0)
         .attr('class', 'data-point')
         .style('fill', d => colorScale(d.class)); // Differentiate by `class`
-    
+
     // Update the scatter plot when X or Y changes
     d3.selectAll('select').on('change', function() {
         const newXAttribute = d3.select('#x-axis-select').property('value');
@@ -125,7 +127,6 @@ const render = data => {
         
         // Update circle positions
         svg.selectAll('circle')
-            .filter(d => d[newYAttribute] !== '')
             .transition()
             .duration(500)
             .attr('r', 5)
