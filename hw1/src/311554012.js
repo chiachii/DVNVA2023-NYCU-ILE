@@ -56,8 +56,8 @@ const svg = d3.select('#scatter-plot')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 // Default Axes (Features)
-const xAttribute = 'sepal_length';
-const yAttribute = 'sepal_length';
+const xAttribute = 'sepal length';
+const yAttribute = 'sepal width';
 
 // Render Function
 const render = data => {
@@ -101,7 +101,7 @@ const render = data => {
         .enter().append('circle')
         .attr('cx', d => xScale(+d[xAttribute]))
         .attr('cy', d => yScale(+d[yAttribute]))
-        .attr('r', 0)
+        .attr('r', 5)
         .attr('class', 'data-point')
         .style('fill', d => colorScale(d.class)); // Differentiate by `class`
 
