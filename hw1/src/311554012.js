@@ -57,7 +57,7 @@ const svg = d3.select('#scatter-plot')
 
 // Default Axes (Features)
 const xAttribute = 'sepal length';
-const yAttribute = 'sepal width';
+const yAttribute = 'sepal length';
 
 // Render Function
 const render = data => {
