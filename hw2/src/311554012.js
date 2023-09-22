@@ -53,6 +53,28 @@ const render = data => {
             .nice();
     });
 
+    // Highlight the specie that is hovered
+    var highlight = function(event, d){
+        // first every group turns gray
+        d3.selectAll('.line')
+            .transition().duration(200)
+            .style('stroke', 'lightgray')
+            .style('opacity', '0.2');
+        // Second the hovered specie takes its color
+        d3.selectAll('.' + d.class)
+            .transition().duration(200)
+            .style('stroke', colorScale(d.class))
+            .style('opacity', '1');
+    };
+
+    // Unhighlight
+    var doNotHighlight = function(event, d){
+        d3.selectAll('.line')
+            .transition().duration(200).delay(1000)
+            .style('stroke', function(d){ return( colorScale(d.class))} )
+            .style('opacity', '1')
+    };
+
     // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw
     function path(d) {
         return d3.line()(columns.map(p => [xScale(p), yScale[p](d[p])]));
@@ -66,9 +88,11 @@ const render = data => {
             .attr('d', path)
             .style('fill', 'none')
             .style('stroke', d => colorScale(d.class))
-            .style('opacity', 0.5);
+            .style('opacity', 0.5)
+            .on('mouseover', highlight)
+            .on('mouseleave', doNotHighlight);
 
-    // Draw the axis
+    // Draw the axes
     svg.selectAll('axis')
         // Add 'g' element for each column:
         .data(columns).enter().append('g')
