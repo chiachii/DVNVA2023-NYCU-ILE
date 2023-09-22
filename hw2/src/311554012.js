@@ -53,6 +53,16 @@ const render = data => {
             .nice();
     });
 
+    // Create and initialize the tooltip
+    const tooltip = d3.select('#tooltip')
+        .style('position', 'absolute')
+        .style('background-color', 'white')
+        .style('border', '1px solid #ddd')
+        .style('border-radius', '4px')
+        .style('padding', '10px')
+        .style('display', 'none')
+        .style('font-size', '0.85rem');
+
     // Highlight the specie that is hovered
     var highlight = function(event, d){
         // first every group turns gray
@@ -65,6 +75,11 @@ const render = data => {
             .transition().duration(200)
             .style('stroke', colorScale(d.class))
             .style('opacity', '1');
+        // Show the tooltip
+        tooltip.style('left', (event.pageX + 10) + 'px')
+            .style('top', (event.pageY - 25) + 'px')
+            .style('display', 'block')
+            .html(`<strong>class:</strong> ${d.class}`);
     };
 
     // Unhighlight
@@ -73,6 +88,8 @@ const render = data => {
             .transition().duration(200).delay(1000)
             .style('stroke', function(d){ return( colorScale(d.class))} )
             .style('opacity', '1')
+        // Hide the tooltip
+        tooltip.style('display', 'none');
     };
 
     // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw
