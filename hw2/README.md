@@ -7,3 +7,6 @@
 
 ### Note
 * The following link is the dataset used in the course: http://vis.lab.djosix.com:2023/data/iris.csv
+
+### References
+[1] [Parallel coordinates chart with color effect](https://d3-graph-gallery.com/graph/parallel_custom.html)
