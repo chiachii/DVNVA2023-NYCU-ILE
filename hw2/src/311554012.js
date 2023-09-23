@@ -62,7 +62,7 @@ const render = data => {
         .style('padding', '10px')
         .style('display', 'none')
         .style('font-size', '0.85rem');
-
+    
     // Highlight the specie that is hovered
     var highlight = function(event, d){
         // first every group turns gray
@@ -85,20 +85,26 @@ const render = data => {
     // Unhighlight
     var doNotHighlight = function(event, d){
         d3.selectAll('.line')
-            .transition().duration(200).delay(1000)
+            .transition().duration(200).delay(300)
             .style('stroke', function(d){ return( colorScale(d.class))} )
             .style('opacity', '1')
         // Hide the tooltip
         tooltip.style('display', 'none');
     };
 
-    // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw
+    // `position`: obtain the corresponding x coordinate whenever the user move the axis
+    var dragging = {};
+    function position(d){
+        return dragging[d] == null ? xScale(d) : dragging[d];
+    };
+
+    // `path`: take a row of the csv as input, and return x and y coordinates of the line to draw for this raw
     function path(d) {
-        return d3.line()(columns.map(p => [xScale(p), yScale[p](d[p])]));
+        return d3.line()(columns.map(p => [position(p), yScale[p](d[p])]));
     };    
 
     //Draw the lines
-    svg.selectAll('path')
+    const pathGroup = svg.selectAll('path')
         .data(data)
         .join('path')
             .attr('class', d => `line ${d.class}`)
@@ -110,7 +116,22 @@ const render = data => {
             .on('mouseleave', doNotHighlight);
 
     // Draw the axes
-    svg.selectAll('axis')
+    // `drag`: the event when the user move the axis
+    const drag = function(event, d) {
+        pathGroup.attr('d', path);
+        // Use d3.pointer to access the x-coordinate
+        const [x] = d3.pointer(event);
+        dragging[d] = Math.min(width+10, x-10); // Limits the interact range 
+        console.log(dragging);
+
+        // Update the columns order
+        columns.sort((a, b) => position(a) - position(b));
+        xScale.domain(columns);
+        // Update the axes
+        axisGroup.attr('transform', d => `translate(${position(d)})`)
+    }
+
+    const axisGroup = svg.selectAll('axis')
         // Add 'g' element for each column:
         .data(columns).enter().append('g')
         .attr('class', 'axis')
@@ -123,11 +144,30 @@ const render = data => {
                 .style('font-size', '12px')
                 .style('color', '#9a9c9a');
         })
-        // Add axis title
-        .append('text')
-            .style('text-anchor', 'middle')
-            .attr('y', height+20)
-            .text(d => d)
-            .style('fill', '#9a9c9a')
-            .style('font-size', '14px');
+        // dragging listener
+        .call(d3.drag()
+            .on('start', function(event, d) {
+                dragging[d] = xScale(d);
+                console.log(dragging);
+            })
+            .on('drag', drag)
+            .on('end', function(event, d) {
+                delete dragging[d];
+                pathGroup
+                    .transition().duration(500)
+                    .attr('d', path);
+                d3.select(this)
+                    .transition().duration(500)
+                    .attr('transform', d => `translate(${position(d)})`)
+            })
+        );
+
+    // Add axes title
+    axisGroup.append('text')
+        .attr('class', 'axis')
+        .style('text-anchor', 'middle')
+        .attr('y', height+20)
+        .text(d => d)
+        .style('fill', '#9a9c9a')
+        .style('font-size', '14px');
 };
