@@ -79,7 +79,7 @@ const render = data => {
         tooltip.style('left', (event.pageX + 10) + 'px')
             .style('top', (event.pageY - 25) + 'px')
             .style('display', 'block')
-            .html(`<strong>class:</strong> ${d.class}`);
+            .html(`<strong>class:</strong> <span style="color:${colorScale(d.class)}">${d.class}</span>`);
     };
 
     // Unhighlight

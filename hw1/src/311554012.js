@@ -156,7 +156,6 @@ const render = data => {
             const yAttribute = d3.select('#y-axis-select').property('value');
             const cxValue = d[xAttribute]; // Use the data object directly to access the `cx` value
             const cyValue = d[yAttribute]; // Use the data object directly to access the `cy` value
-            const classValue = d.class;
             
             // Highlight the point by changing its fill color
             d3.select(this)
@@ -171,7 +170,7 @@ const render = data => {
             tooltip.style('left', (event.pageX + 10) + 'px')
                 .style('top', (event.pageY - 25) + 'px')
                 .style('display', 'block')
-                .html(`<strong>class:</strong> ${classValue}`);
+                .html(`<strong>class:</strong> <span style="color:${colorScale(d.class)}">${d.class}</span>`);
         })
         .on('mouseout', function() {
             // Change it back to the class-based color
