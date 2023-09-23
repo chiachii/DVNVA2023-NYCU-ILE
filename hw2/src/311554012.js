@@ -121,7 +121,7 @@ const render = data => {
         pathGroup.attr('d', path);
         // Use d3.pointer to access the x-coordinate
         const [x] = d3.pointer(event);
-        dragging[d] = Math.min(width+10, x-10); // Limits the interact range 
+        dragging[d] = Math.min(width+10, Math.max(-10, x-10)); // Limits the interact range 
         console.log(dragging);
 
         // Update the columns order
