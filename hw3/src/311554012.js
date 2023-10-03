@@ -12,31 +12,49 @@ d3.text('../data/abalone.data').then(text => {
         });
         return rowData;
     });
-    
     data.columns = columns;
+
+    // Controller Function
+    controller(data);
 
     // Correlation Matrix
     render(data);
 });
 
+// Controller Function
+const attributions = ['M', 'F', 'I'];
+const controller = () => {
+    // Generate unique IDs for each category
+    attributions.forEach(category => {
+        // Selector dropdown
+        d3.select(`#sex-select-${category}`)
+            .selectAll('option')
+            .data(attributions)
+            .enter()
+            .append('option')
+            .text(d => d)
+            .attr('value', d => d);
+    });
+};
+
 // Correlation Matrix
 // Define the SVG dimensions and margins 
-const margin = { top: 65, right: 100, bottom: 65, left: 30};
-const width = 500 - margin.left - margin.right;
+const margin = { top: 65, right: 160, bottom: 65, left: 90};
+const width = 620 - margin.left - margin.right;
 const height = 500 - margin.top - margin.bottom;
 
 // Create the SVG container
 const svg = d3.selectAll('#correlation-matrix')
     .append('svg')
-    .attr('width', 500)
-    .attr('height', 500)
+    .attr('width', 620)
+    .attr('height', 560)
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 // Create a color scale
 const colorScale = d3.scaleLinear()
         .domain([-1, 0, 1])
-        .range(['#B22222', '#fff', '#000080']);
+        .range(['#cfb83a', '#fff', '#000080']);
 
 // Create a size scale for bubbles on top right.
 const size = d3.scaleSqrt()
@@ -101,7 +119,6 @@ const render = data => {
     });
     // console.log(correlationMatrices); // For check
 
-    // Create the correlation matrix visualization
     // Modify the data to match the format expected by the new visualization
     const corData = [];
     features.forEach(feature1 => {
@@ -117,41 +134,57 @@ const render = data => {
         });
     });
 
-    // Create the 'g' elements for each cell of the correlogram
-    const cor = svg.selectAll('.cor')
-        .data(corData.filter(d => d.category == 'M'))
-        .enter()
-        .append('g')
-        .attr('class', 'cor')
-        .attr('transform', d => `translate(${xScale(d.x)}, ${yScale(d.y)})`);
-    
-    cor.append('rect')
-        .attr('width', width / 7)
-        .attr('height', height / 7)
-        .attr('x', -width / 14)
-        .attr('y', -height / 14);
+    // Function to create the correlation matrix visualization
+    const plotCorrelationMatrix = (category) => {
+        // Create the 'g' elements for each cell of the correlogram
+        const cor = svg.selectAll('.cor')
+            .data(corData.filter(d => d.category == category))
+            .enter()
+            .append('g')
+            .attr('class', 'cor')
+            .attr('transform', d => `translate(${xScale(d.x)}, ${yScale(d.y)})`);
+        
+        cor.append('rect')
+            .attr('width', width / 7)
+            .attr('height', height / 7)
+            .attr('x', -width / 14 + 30)
+            .attr('y', -height / 14);
 
-    // Low left part + Diagonal: Add the text with specific color
-    cor.filter(d => features.indexOf(d.y) >= features.indexOf(d.x))
-        .append('text')
-        .attr('y', 5)
-        .text(d => {
-            if (d.x === d.y) {
-                return d.value.toFixed(2);
-            } else {
-                return d.value.toFixed(2);
-            }
-        })
-        .style('font-size', 11)
-        .style('text-align', 'center')
-        .style('fill', d => {
-            return colorScale(d.value);
-        });
+        // Low left part + Diagonal: Add the text with specific color
+        cor.filter(d => features.indexOf(d.y) >= features.indexOf(d.x))
+            .append('text')
+            .transition().duration(500)
+            .attr('x', 30)
+            .attr('y', 5)
+            .text(d => {
+                if (d.x === d.y) {
+                    return d.value.toFixed(2);
+                } else {
+                    return d.value.toFixed(2);
+                }
+            })
+            .style('font-size', 11)
+            .style('text-align', 'center')
+            .style('fill', d => {
+                return colorScale(d.value);
+            });
+
+        // Up right part: add circles
+        cor.filter(d => features.indexOf(d.y) < features.indexOf(d.x))
+            .append('circle')
+            .transition().duration(500)
+            .attr('r', d => size(Math.abs(d.value*2.5)))
+            .style('fill', d => {
+                return colorScale(d.value);
+            })
+            .style('opacity', 0.8)
+            .attr('transform', `translate(30, 0)`);
+    };
     
-    // Color Bar
+    // Right side: color bar
     const aS = d3.scaleLinear()
-            .range([-margin.top + 38, height + margin.bottom - 38])
-            .domain([1, -1]);
+        .range([-margin.top + 38, height + margin.bottom - 38])
+        .domain([1, -1]);
 
     const yA = d3.axisRight()
         .scale(aS)
@@ -174,101 +207,78 @@ const render = data => {
             .attr('y', aS(d));
     });
 
-    // Up right part: add circles
-    cor.filter(d => features.indexOf(d.y) < features.indexOf(d.x))
-        .append('circle')
-        .attr('r', d => size(Math.abs(d.value*2.5)))
-        .style('fill', d => {
-            return colorScale(d.value);
-        })
-        .style('opacity', 0.8);
-    
-    // // Add feature names to x-axis and y-axis
-    // svg.append('g')
-    //     .selectAll('text')
-    //     .data(features)
-    //     .enter()
-    //     .append('text')
-    //     .attr('x', -5)
-    //     .attr('y', d => yScale(d))
-    //     .attr('dy', '0.32em')
-    //     .style('text-anchor', 'end')
-    //     .style('font-size', 10)
-    //     .text(d => d);
-
-    // svg.append('g')
-    //     .selectAll('text')
-    //     .data(features)
-    //     .enter()
-    //     .append('text')
-    //     .attr('x', d => xScale(d))
-    //     .attr('y', -5)
-    //     .attr('dy', '0.32em')
-    //     .style('text-anchor', 'middle')
-    //     .style('font-size', 10)
-    //     .attr('transform', `rotate(-90)`)
-    //     .text(d => d);
-    
-    // TEST
-    // Create the correlation matrix visualization
-    const renderCorrelationMatrix = (correlationMatrix) => {
-        const margin = { top: 25, right: 80, bottom: 25, left: 25 };
-        const width = 500 - margin.left - margin.right;
-        const height = 500 - margin.top - margin.bottom;
-        const domain = features; // Assuming 'features' is defined
-        const num = Math.sqrt(data.length);
-
-        const xSpace = xScale.range()[1] - xScale.range()[0];
-        const ySpace = yScale.range()[1] - yScale.range()[0];
-
-        const svg = d3.select('#correlation-matrix')
-            .append('svg')
-            .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.top + margin.bottom)
-            .append('g')
-            .attr('transform', `translate(${margin.left},${margin.top})`);
-
-        const cor = svg.selectAll('.cor')
-            .data(correlationMatrix)
-            .enter()
-            .append('g')
-            .attr('class', 'cor')
-            .attr('transform', d => `translate(${xScale(d.x)},${yScale(d.y)})`);
-
-        cor.append('rect')
-            .attr('width', xSpace / 10)
-            .attr('height', ySpace / 10)
-            .attr('x', -xSpace / 20)
-            .attr('y', -ySpace / 20);
-
-        cor.filter(d => {
-            const ypos = domain.indexOf(d.y);
-            const xpos = domain.indexOf(d.x);
-            for (let i = ypos + 1; i < num; i++) {
-                if (i === xpos) return false;
-            }
-            return true;
-        })
+    // Add feature names to X and Y axes
+    svg.append('g')
+        .selectAll('text')
+        .data(features)
+        .enter()
         .append('text')
-        .attr('y', 5)
-        .text(d => (d.x === d.y) ? d.x : d.value.toFixed(2))
-        .style('fill', d => (d.value === 1) ? '#000' : colorScale(d.value));
+        .attr('x', -5)
+        .attr('y', d => yScale(d))
+        .attr('dy', '0.32em')
+        .style('text-anchor', 'end')
+        .style('font-size', 12)
+        .text(d => d);
 
-        cor.filter(d => {
-            const ypos = domain.indexOf(d.y);
-            const xpos = domain.indexOf(d.x);
-            for (let i = ypos + 1; i < num; i++) {
-                if (i === xpos) return true;
-            }
-            return false;
-        })
-        .append('circle')
-        .attr('r', d => (width / (num * 2)) * (Math.abs(d.value) + 0.1))
-        .style('fill', d => (d.value === 1) ? '#000' : colorScale(d.value));
+    svg.append('g')
+        .selectAll('text')
+        .data(features)
+        .enter()
+        .append('text')
+        .attr('y', d => yScale(d))
+        .attr('dy', '0.32em')
+        .style('text-anchor', 'end')
+        .style('font-size', 12)
+        .text(d => d)
+        .attr('transform', `translate(30, ${height + 35}) rotate(-90)`);
 
-    };
+    // Call the plotCorrelationMatrix function with your calculated correlation matrix
+    attributions.forEach(category => {
+        // Clear the existing visualizations for this category
+        d3.select(`.matrix-${category}`).selectAll('.cor').remove();
 
-    // Call the renderCorrelationMatrix function with your calculated correlation matrix
-    renderCorrelationMatrix(correlationMatrices['M']); // You can choose the desired category
+        // Call plotCorrelationMatrix with the selected sex for this category
+        plotCorrelationMatrix(category);
+    });
 
+    // Get the select element for this category
+    const selectElement_M = document.getElementById('sex-select-M');
+    const selectElement_F = document.getElementById('sex-select-F');
+    const selectElement_I = document.getElementById('sex-select-I');
+    // Initialize selectors
+    selectElement_M.selectedIndex = 0;
+    selectElement_F.selectedIndex = 1;
+    selectElement_I.selectedIndex = 2;
+    
+    // Listen for changes to the select element
+    selectElement_M.addEventListener('change', function () {
+        // Get the selected value (sex)
+        const selectedSex = selectElement_M.value;
+
+        // Clear the existing visualizations for this category
+        d3.select('.matrix-M').selectAll('.cor').remove();
+
+        // Call plotCorrelationMatrix with the selected sex for this category
+        plotCorrelationMatrix(selectedSex);
+    });
+    selectElement_F.addEventListener('change', function () {
+        // Get the selected value (sex)
+        const selectedSex = selectElement_F.value;
+
+        // Clear the existing visualizations for this category
+        d3.select('.matrix-F').selectAll('.cor').remove();
+
+        // Call plotCorrelationMatrix with the selected sex for this category
+        plotCorrelationMatrix(selectedSex);
+    });
+    selectElement_I.addEventListener('change', function () {
+        // Get the selected value (sex)
+        const selectedSex = selectElement_I.value;
+
+        // Clear the existing visualizations for this category
+        d3.select('.matrix-I').selectAll('.cor').remove();
+
+        // Call plotCorrelationMatrix with the selected sex for this category
+        plotCorrelationMatrix(selectedSex);
+    });
 };
