@@ -46,7 +46,7 @@ const height = 500 - margin.top - margin.bottom;
 // Create the SVG container
 const svg = d3.selectAll('#correlation-matrix')
     .append('svg')
-    .attr('width', 620)
+    .attr('width', 615)
     .attr('height', 560)
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
