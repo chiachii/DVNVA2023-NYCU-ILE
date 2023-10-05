@@ -110,7 +110,7 @@ const render = data => {
         const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
 
         return denominator === 0 ? NaN : numerator / denominator;
-    }
+    };
 
     // Calculate correlation matrices for each category
     const correlationMatrices = {};
