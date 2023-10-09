@@ -79,6 +79,7 @@ const render = data => {
             .selectAll('rect')
             .data(bins)
             .join('rect')
+                .attr('class', 'data-bar')
                 .attr('x', 1)
                 .attr('transform', d => `translate(${xScale(d.x0)}, ${yScale(d.length)})`)
                 .attr('width', d => xScale(d.x1) - xScale(d.x0))
@@ -150,6 +151,7 @@ const render = data => {
     const swLabel = d3.select('#sw-label');
 
     // Add event listeners to show/hide the tooltip
+    // (1) Scatter Plot to Histogram
     svg.selectAll('.data-point')
         .on('mouseover', function(event, d) {
             // Highlight the point by changing its fill color
@@ -209,5 +211,35 @@ const render = data => {
             pwLabel.text('');
             slLabel.text('');
             swLabel.text('');
+        });
+
+    // (2) Histogram to Scatter Plot
+    svg.selectAll('.data-bar')
+        .on('mouseover', function(event, d) {
+            // Highlight the point by changing its fill color
+            // Scatter plot
+            d.forEach(d => {
+                d3.selectAll('.data-point')
+                    .filter(data => data === d)
+                    .style('fill', '#FFA500');
+            });
+
+            // Histogram
+            d3.selectAll('.data-bar')
+                .filter(data => data === d)
+                .style('fill', '#FFA500');
+        })
+        .on('mouseout', function(event, d) {
+            // Change it back to the class-based color
+            // Scatter plot
+            d.forEach(d => {
+                d3.selectAll('.data-point')
+                    .filter(data => data === d)
+                    .style('fill', colorScale(d.class));
+            });
+
+            // Histogram
+            d3.selectAll('rect')
+                .style('fill', '#b8b8b8');
         });
 }; 
