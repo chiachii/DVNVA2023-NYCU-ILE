@@ -86,7 +86,7 @@ const render = data => {
                 .attr('height', d => (width/4+15) - yScale(d.length))
                 .style('fill', '#b8b8b8')
                 .attr('stroke', 'white')
-                .attr('data-column', feature1);
+                .attr('data-column', feature1)
     };
 
     function addScatterPlot(feature1, feature2) {
@@ -139,7 +139,27 @@ const render = data => {
             };
 
             // Add feature names at left side and bottom side
-            // TODO
+            // Left side
+            svg.selectAll('.column-label-left')
+                .data(columns)
+                .enter().append('text')
+                .text(d => d)
+                .attr('x', d => position(d)-680)
+                .style('font-size', 14)
+                .attr('text-anchor', 'end')
+                .attr('transform', `translate(-15, ${height+220}) rotate(90)`)
+                .attr('class', 'column-label-left');
+            
+            // Bottom side
+            svg.selectAll('.column-label-bottom')
+                .data(columns)
+                .enter().append('text')
+                .text(d => d)
+                .attr('x', d => position(d)+105)
+                .style('font-size', 14)
+                .attr('text-anchor', 'middle')
+                .attr('transform', `translate(0, ${height+220})`)
+                .attr('class', 'column-label-bottom');
         };
     };
     
