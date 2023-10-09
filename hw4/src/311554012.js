@@ -29,13 +29,13 @@ const svg = d3.select('#scatter-plot-matrix')
 // Render Function
 const render = data => {
     // Extract the feature names
-    const columns = data.columns.slice(0, 4);
+    const columns = ['petal length', 'petal width', 'sepal length', 'sepal width'];
 
     // Create color scale
     const species = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'];
     const colorScale = d3.scaleOrdinal()
         .domain(species)
-        .range(d3.schemeCategory10)
+        .range(['#6495ED', '#20B2AA', '#9370DB'])
 
     // Create a scale: gives the position of each pair each featureiable
     const position = d3.scalePoint()
@@ -44,8 +44,8 @@ const render = data => {
     
     // Functions for plotting scatter plots and histograms
     function addHistogram(feature1, feature2) {
-        // create X Scale
-        xExtent = d3.extent(data, function(d) { return +d[feature1] })
+        // Create X Scale
+        xExtent = d3.extent(data, d => +d[feature1])
         const xScale = d3.scaleLinear()
             .domain(xExtent).nice()
             .range([0, width/4+15]);
@@ -62,11 +62,11 @@ const render = data => {
 
         // set the parameters for the histogram
         const histogram = d3.histogram()
-            .value(d => +d[feature1])   // I need to give the vector of value
-            .domain(xScale.domain())  // then the domain of the graphic
-            .thresholds(xScale.ticks(20)); // then the numbers of bins
+            .value(d => +d[feature1])   // give the vector of value
+            .domain(xScale.domain())  // domain of the graphic
+            .thresholds(xScale.ticks(20)); // numbers of bins
 
-        // And apply this function to data to get the bins
+        // Apply this function to data to get the bins
         const bins = histogram(data);
 
         // Y axis: scale and draw:
@@ -85,6 +85,7 @@ const render = data => {
                 .attr('height', d => (width/4+15) - yScale(d.length))
                 .style('fill', '#b8b8b8')
                 .attr('stroke', 'white')
+                .attr('data-column', feature1);
     };
 
     function addScatterPlot(feature1, feature2) {
@@ -115,19 +116,20 @@ const render = data => {
         tmp.selectAll('circles')
             .data(data)
             .join('circle')
-            .attr('cx', d => xScale(+d[feature1]))
-            .attr('cy', d => yScale(+d[feature2]))
-            .attr('r', 3)
-            .attr('fill', d => colorScale(d.class));
+                .attr('class', 'data-point')
+                .attr('cx', d => xScale(+d[feature1]))
+                .attr('cy', d => yScale(+d[feature2]))
+                .attr('r', 3.5)
+                .attr('fill', d => colorScale(d.class));
     };
 
     // Add charts
     for (i in columns) {
         for (j in columns) {
-            // Get current featureiable name
+            // Get current feature name
             let feature1 = columns[i]
             let feature2 = columns[j]
-            
+
             // Add histogram: if index is same, i.e. `i==j` (diagonal)
             if (feature1 === feature2) { 
                 addHistogram(feature1, feature2); 
@@ -136,8 +138,76 @@ const render = data => {
             };
 
             // Add feature names at left side and bottom side
-            
+            // TODO
         };
     };
+    
+    // Select the label elements where you want to display the selected values
+    const classLabel = d3.select('#class-label')
+    const plLabel = d3.select('#pl-label');
+    const pwLabel = d3.select('#pw-label');
+    const slLabel = d3.select('#sl-label');
+    const swLabel = d3.select('#sw-label');
 
+    // Add event listeners to show/hide the tooltip
+    svg.selectAll('.data-point')
+        .on('mouseover', function(event, d) {
+            // Highlight the point by changing its fill color
+            // Scatter plot
+            d3.selectAll('.data-point')
+                .filter(data => data === d)
+                .style('fill', '#FFA500');
+
+            // Histogram
+            for (i in columns) {
+                // Create X Scale
+                xExtent = d3.extent(data, d => +d[columns[i]])
+                const xScale = d3.scaleLinear()
+                    .domain(xExtent).nice()
+                    .range([0, width/4+15]);
+
+                // Get bins
+                const histogram = d3.histogram()
+                    .value(d => +d[columns[i]])
+                    .domain(xScale.domain()) 
+                    .thresholds(xScale.ticks(20));
+                const bins = histogram(data);
+                // console.log('bins=',bins) // for debug
+
+                // Highlight the corresponding bins
+                bins.forEach(b => {
+                    if (d[columns[i]] >= b.x0 && d[columns[i]] < b.x1) {
+                        // console.log('b=',b) // for debug
+                        d3.selectAll(`rect[data-column='${columns[i]}']`)
+                            .filter(bins => bins.x0 === b.x0 && bins.x1 === b.x1)
+                            .style('fill', '#FFA500');
+                    };
+                });
+            };
+
+            // Show the values
+            classLabel.text(`${d['class']}`).style('color', colorScale(d['class']));
+            plLabel.text(`${d['petal length']}`).style('color', colorScale(d['class']));
+            pwLabel.text(`${d['petal width']}`).style('color', colorScale(d['class']));
+            slLabel.text(`${d['sepal length']}`).style('color', colorScale(d['class']));
+            swLabel.text(`${d['sepal width']}`).style('color', colorScale(d['class']));
+        })
+        .on('mouseout', function(event, d) {
+            // Change it back to the class-based color
+            // Scatter plot
+            d3.selectAll('.data-point')
+                .filter(data => data === d)
+                .style('fill', d => colorScale(d.class));
+
+            // Histogram
+            d3.selectAll('rect')
+                .style('fill', '#b8b8b8');
+
+            // Hide the values
+            classLabel.text('');
+            plLabel.text('');
+            pwLabel.text('');
+            slLabel.text('');
+            swLabel.text('');
+        });
 }; 

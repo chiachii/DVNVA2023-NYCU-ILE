@@ -19,7 +19,7 @@ body {
 }
 .card-info {
     font-size: 0.85rem;
-    width: 800px;
+    width: min(98%, 800px);
     align-items: center;
     border: 0.5px solid;
     border-radius: 4px;
