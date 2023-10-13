@@ -7,7 +7,7 @@ Data Visualization and Visual Analytics(2023) at National Yang Ming Chiao Tung U
 * **hw2:** [Parallel Coordinate Plots](http://f8bc6939fa2af991.vis.lab.djosix.com:2023/)
 * **hw3:** [Correlation Matrix](http://7f94c403e213c784.vis.lab.djosix.com:2023/)
 * **hw4:** [Brushable Scatter Plot Matrix](http://6c458b7592542677.vis.lab.djosix.com:2023/)
-* **hw5:** Diverging Stacked Bar Chart
+* **hw5:** Stacked Bar Chart
 * **hw6:** ThemeRiver
 * **hw7:** Horizen Chart
 * **hw8:** Sankey Diagram
