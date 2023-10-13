@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Homework 5: Stacked Bar Charts </title>
+    <link rel="stylesheet" href="./311554012.css">
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title"> 【112A】Data Visualization and Visual Analytics@NYCU </h1>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title"> Homework 5: Stacked Bar Charts </p>
+            </header>
+            <div class="card-content">
+                <!-- main program -->
+                <span> Touch any data bar to show the details: </span><br>
+                <div class="card-info">
+                    <div>
+                        <label for="class-select"> Class : </label>
+                        <label id="class-label"></label>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <div class="card-subinfo">
+                        <label for="pl-select"> Petal Length = </label>
+                        <label id="pl-label"></label>
+                    </div>
+                    <div class="card-subinfo">
+                        <label for="pw-select"> Petal Width = </label>
+                        <label id="pw-label"></label>
+                    </div>
+                    <div class="card-subinfo">
+                        <label for="sl-select"> Sepal Length = </label>
+                        <label id="sl-label"></label>
+                    </div>
+                    <div class="card-subinfo">
+                        <label for="sw-select"> Sepal Width = </label>
+                        <label id="sw-label"></label>
+                    </div>
+                </div>
+                <div id="stacked-bar-chart"></div>
+                <script src="./311554012.js"></script>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
