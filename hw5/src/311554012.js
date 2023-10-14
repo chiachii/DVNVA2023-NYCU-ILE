@@ -105,6 +105,8 @@ const render = (data, amount) => {
             .attr('x', (d, i) => xScale(i+1)+10)
             .attr('y', d => yScale(d[1]))
             .attr('height', d => yScale(d[0]) - yScale(d[1]))
+            .transition()
+            .duration(500)
             .attr('width', xScale.bandwidth());
 
     // `sort-by-selector`: re-plot based on change of the `sort-by-select` selector
