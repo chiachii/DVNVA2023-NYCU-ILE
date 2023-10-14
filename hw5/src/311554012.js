@@ -1,5 +1,9 @@
 // Load the dataset
 d3.csv('../data/TIMES_WorldUniversityRankings_2024.csv').then(data => {
+    // Define the default (global) value: `order`, `amount`
+    var order = 'descending';
+    var amount = '201';
+
     // `amount-selector`: re-plot based on change of the `amount-select` selector
     const amountSelect = d3.select('#amount-select');
     const amountOptions = Object.keys([...Array(201).keys()]);
@@ -12,35 +16,44 @@ d3.csv('../data/TIMES_WorldUniversityRankings_2024.csv').then(data => {
         .attr('value', d => d);
 
     d3.select('#amount-select').on('change', function() {
-        const selectedAmount = +this.value;
+        amount = +this.value; // Global Scope
 
         // Update charts
         svg.selectAll('g').remove();
-        render(data, selectedAmount);
+        render(data, order, amount);
+    });
+
+    // `order-selector`: re-plot based on change of the `order-select` selector
+    d3.select('#order-select').on('change', function() {
+        order = this.value; 
+
+        // Update charts
+        svg.selectAll('g').remove();
+        render(data, order, amount);
     });
 
     // Initialization
-    render(data, 201);
+    render(data, order, amount);
 });
 
 // Build the Stacked Bar Charts
 // Define the SVG dimensions and margins 
 const margin = { top: 20, right: 20, bottom: 20, left: 20};
-const width = 1200 - margin.left - margin.right;
+const width = 1300 - margin.left - margin.right;
 const height = 500 - margin.top - margin.bottom;
 
 // Create the SVG container
 const svg = d3.select('#stacked-bar-chart')
     .append('svg')
-    .attr('width', 1300)
+    .attr('width', 1400)
     .attr('height', 540)
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 // Render Function
-const render = (data, amount) => {
+const render = (data, order, amount) => {
     // `groups`: the name of each school 
-        const groups = data.map(d => (d.name)).slice(0, +amount);
+    const groups = data.map(d => (d.name)).slice(0, +amount);
 
     // `subgroups`: the header we need in the csv file
     var subgroups = data.columns.slice(2, 14).filter(item => !item.includes('rank'));
@@ -56,8 +69,14 @@ const render = (data, amount) => {
     // console.log(data);
 
     // Add X axis
+    if (order === 'ascending') {
+        var xValue = data.map(d => (d.rank)).toReversed();
+    } else {
+        var xValue = data.map(d => (d.rank));
+    };
+
     const xScale = d3.scaleBand()
-        .domain(Object.keys(groups).map(key => parseInt(key) + 1))
+        .domain(xValue)
         .range([0, width])
         .padding([0.5]);
 
@@ -94,15 +113,13 @@ const render = (data, amount) => {
     // Show the bars
     svg.append('g')
         .selectAll('g')
-        // Enter in the stack data = loop key per key = group per group
-        .data(stackedData)
+        .data(stackedData) // Enter in the stack data
         .join('g')
             .attr('fill', d => colorScale(d.key))
             .selectAll('rect')
-            // enter a second time = loop subgroup per subgroup to add all rectangles
-            .data(d => d)
+            .data(d => d) // Add all rectangles: loop based on subgroup
             .join('rect')
-            .attr('x', (d, i) => xScale(i+1)+10)
+            .attr('x', d => xScale(d.data.rank)+10)
             .attr('y', d => yScale(d[1]))
             .attr('height', d => yScale(d[0]) - yScale(d[1]))
             .transition()
@@ -145,13 +162,47 @@ const render = (data, amount) => {
                 .selectAll('rect')
                     .data(d => d)
                     .join('rect')
-                    .attr('x', (d, i) => xScale(i+1)+10)
+                    .attr('x', d => xScale(d.data.rank)+10)
                     .attr('y', d => yScale(d[1]))
                     .attr('height', d => yScale(d[0]) - yScale(d[1]))
                     .transition()
                     .duration(500)
                     .attr('width', xScale.bandwidth());
+            
+            // Call tooltip function 
+            tooltip();
         });
     
     // `order-selector`: re-plot based on change of the `order-select` selector
+    
+    // TODO:
+    // Tooltip
+    // Add event listeners to show/hide the tooltip
+    function tooltip() {
+        const classLabel = d3.select('#class-label')
+        svg.selectAll('rect')
+            .on('mouseover', function(event, d) {
+                // Highlight the point by changing its fill color
+                // Stacked bar charts
+                d3.selectAll('rect')
+                    .filter(data => data === d)
+                    .style('stroke', 'red')
+                    .style('stroke-width', '2px');
+
+                // Show the values
+                classLabel.text(`${d.data.name}`);
+            })
+            .on('mouseout', function(event, d) {
+                // Change it back to the class-based color
+                // Stacked bar charts
+                d3.selectAll('rect')
+                    .filter(data => data === d)
+                    .style('stroke', 'none');
+
+                // Hide the values
+                classLabel.text('');
+            });
+    };
+    // Call tooltip function 
+    tooltip();
 }; 
