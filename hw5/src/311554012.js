@@ -1,7 +1,26 @@
 // Load the dataset
 d3.csv('../data/TIMES_WorldUniversityRankings_2024.csv').then(data => {
-    // console.log(data);
-    render(data);
+    // `amount-selector`: re-plot based on change of the `amount-select` selector
+    const amountSelect = d3.select('#amount-select');
+    const amountOptions = Object.keys([...Array(201).keys()]);
+    
+    amountSelect.selectAll('option')
+        .data(amountOptions)
+        .enter()
+        .append('option')
+        .text(d => d)
+        .attr('value', d => d);
+
+    d3.select('#amount-select').on('change', function() {
+        const selectedAmount = +this.value;
+
+        // Update charts
+        svg.selectAll('g').remove();
+        render(data, selectedAmount);
+    });
+
+    // Initialization
+    render(data, 201);
 });
 
 // Build the Stacked Bar Charts
@@ -19,9 +38,9 @@ const svg = d3.select('#stacked-bar-chart')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 // Render Function
-const render = data => {
+const render = (data, amount) => {
     // `groups`: the name of each school 
-    const groups = data.map(d => (d.name)).slice(0, 100);
+        const groups = data.map(d => (d.name)).slice(0, +amount);
 
     // `subgroups`: the header we need in the csv file
     var subgroups = data.columns.slice(2, 14).filter(item => !item.includes('rank'));
@@ -33,7 +52,7 @@ const render = data => {
             d['rank'] = d['rank'].replace('=', '');
         }
     });
-    data = data.filter(d => !isNaN(d['rank'])).slice(0, 100);
+    data = data.filter(d => !isNaN(d['rank'])).slice(0, +amount);
     // console.log(data);
 
     // Add X axis
@@ -131,4 +150,6 @@ const render = data => {
                     .duration(500)
                     .attr('width', xScale.bandwidth());
         });
+    
+    // `order-selector`: re-plot based on change of the `order-select` selector
 }; 
