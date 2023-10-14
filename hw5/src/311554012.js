@@ -61,7 +61,6 @@ const render = (data, order, amount) => {
     // Preprocessing: delete rows without the value of 'score_overall'
     data.forEach(d => {
         if (isNaN(d['rank']) && d['rank'].startsWith('=')) {
-            // d['rank'] = parse(d['rank'].substring(1));
             d['rank'] = d['rank'].replace('=', '');
         }
     });
@@ -70,11 +69,11 @@ const render = (data, order, amount) => {
 
     // Add X axis
     if (order === 'ascending') {
-        var xValue = data.map(d => (d.rank)).toReversed();
+        var xValue = Object.keys(groups).map(key => parseInt(key) + 1).toReversed();
     } else {
-        var xValue = data.map(d => (d.rank));
+        var xValue = Object.keys(groups).map(key => parseInt(key) + 1);
     };
-
+    
     const xScale = d3.scaleBand()
         .domain(xValue)
         .range([0, width])
@@ -119,7 +118,7 @@ const render = (data, order, amount) => {
             .selectAll('rect')
             .data(d => d) // Add all rectangles: loop based on subgroup
             .join('rect')
-            .attr('x', d => xScale(d.data.rank)+30)
+            .attr('x', (d, i) => xScale(i+1)+30)
             .attr('y', d => yScale(d[1]))
             .attr('height', d => yScale(d[0]) - yScale(d[1]))
             .transition()
@@ -162,7 +161,7 @@ const render = (data, order, amount) => {
                 .selectAll('rect')
                     .data(d => d)
                     .join('rect')
-                    .attr('x', d => xScale(d.data.rank)+30)
+                    .attr('x', (d, i) => xScale(i+1)+30)
                     .attr('y', d => yScale(d[1]))
                     .attr('height', d => yScale(d[0]) - yScale(d[1]))
                     .transition()
@@ -170,7 +169,7 @@ const render = (data, order, amount) => {
                     .attr('width', xScale.bandwidth());
             
             // Call tooltip function 
-            tooltip();
+            tooltip_function();
         });
     
     // Add axis names at left side and bottom side
@@ -186,7 +185,7 @@ const render = (data, order, amount) => {
     
     // Bottom side
     svg.selectAll('.column-label-bottom')
-        .data(['Rank'])
+        .data(['Index'])
         .enter().append('text')
         .text(d => d)
         .style('font-size', 14)
@@ -194,34 +193,70 @@ const render = (data, order, amount) => {
         .attr('transform', `translate(${width/2+50}, ${height+40})`)
         .attr('class', 'column-label-bottom');
     
-    // TODO:
     // Tooltip
     // Add event listeners to show/hide the tooltip
-    function tooltip() {
+    function tooltip_function() {
+        // Create a tooltip
+        const tooltip = d3.select('#tooltip')
+            .style('position', 'absolute')
+            .style('background-color', 'white')
+            .style('border', '1px solid #ddd')
+            .style('border-radius', '4px')
+            .style('padding', '10px')
+            .style('display', 'none')
+            .style('font-size', '0.85rem');
+
         const classLabel = d3.select('#class-label')
         svg.selectAll('rect')
             .on('mouseover', function(event, d) {
-                // Highlight the point by changing its fill color
-                // Stacked bar charts
+                // Highlight
                 d3.selectAll('rect')
-                    .filter(data => data === d)
-                    .style('stroke', 'red')
-                    .style('stroke-width', '2px');
-
+                    .filter(data => data.data.name === d.data.name)
+                    .style('stroke', '#fc330f')
+                    .style('stroke-width', '1.5px');
+                    
                 // Show the values
                 classLabel.text(`${d.data.name}`);
+                // Show the tooltip
+                tooltip.style('left', (event.pageX + 10) + 'px')
+                    .style('top', (event.pageY - 25) + 'px')
+                    .style('display', 'block')
+                    .html(`
+                        <strong> Rank: </strong> ${d.data.rank} <br>
+                        <span style="color:#a9a9a9"> detail score (ranking) </span>
+                        <hr />
+                        <span>
+                            <i class="fa fa-square" style="color:#9ac8eb"></i> : ${d.data.scores_overall} (${d.data.scores_overall_rank})
+                        </span> <br>
+                        <span>
+                            <i class="fa fa-square" style="color:#d9a7c7"></i> : ${d.data.scores_teaching} (${d.data.scores_teaching_rank})
+                        </span> <br>
+                        <span>
+                            <i class="fa fa-square" style="color:#81C784"></i> : ${d.data.scores_research} (${d.data.scores_research_rank})
+                        </span> <br>
+                        <span>
+                            <i class="fa fa-square" style="color:#f3c7d5"></i> : ${d.data.scores_citations} (${d.data.scores_citations_rank})
+                        </span> <br>
+                        <span>
+                            <i class="fa fa-square" style="color:#90A4AE"></i> : ${d.data.scores_industry_income} (${d.data.scores_industry_income_rank})
+                        </span> <br>
+                        <span>
+                            <i class="fa fa-square" style="color:#f9c995"></i> : ${d.data.scores_international_outlook} (${d.data.scores_international_outlook_rank})
+                        </span>
+                    `);
             })
             .on('mouseout', function(event, d) {
-                // Change it back to the class-based color
-                // Stacked bar charts
+                // Change it back
                 d3.selectAll('rect')
-                    .filter(data => data === d)
+                    .filter(data => data.data.name === d.data.name)
                     .style('stroke', 'none');
 
                 // Hide the values
                 classLabel.text('');
+                // Hide the tooltip
+                tooltip.style('display', 'none');
             });
     };
     // Call tooltip function 
-    tooltip();
+    tooltip_function();
 }; 
