@@ -20,28 +20,29 @@
             <div class="card-content">
                 <!-- main program -->
                 <span> Touch any data bar to show the details: </span><br>
-                <div class="card-info">
-                    <div>
-                        <label for="class-select"> Class : </label>
-                        <label id="class-label"></label>
+                <div class="info-border">
+                    <div class="card-info">
+                        <div>
+                            <label for="class-select"> School : </label>
+                            <label id="class-label"></label>
+                        </div>
                     </div>
-                </div>
-                <div class="card-info">
-                    <div class="card-subinfo">
-                        <label for="pl-select"> Petal Length = </label>
-                        <label id="pl-label"></label>
-                    </div>
-                    <div class="card-subinfo">
-                        <label for="pw-select"> Petal Width = </label>
-                        <label id="pw-label"></label>
-                    </div>
-                    <div class="card-subinfo">
-                        <label for="sl-select"> Sepal Length = </label>
-                        <label id="sl-label"></label>
-                    </div>
-                    <div class="card-subinfo">
-                        <label for="sw-select"> Sepal Width = </label>
-                        <label id="sw-label"></label>
+                    <div class="card-info wo-border">
+                        <div class="card-subinfo">
+                            <label for="sort-by-select"> Sort by = </label>
+                            <select id="sort-by-select"></select>
+                            <label id="sort-by-label"></label>
+                        </div>
+                        <div class="card-subinfo">
+                            <label for="order-select"> Order = </label>
+                            <select id="order-select"></select>
+                            <label id="order-label"></label>
+                        </div>
+                        <div class="card-subinfo">
+                            <label for="amount-select"> Amount = </label>
+                            <select id="amount-select"></select>
+                            <label id="amount-label"></label>
+                        </div>
                     </div>
                 </div>
                 <div id="stacked-bar-chart"></div>
