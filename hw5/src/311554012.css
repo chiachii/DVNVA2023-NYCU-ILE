@@ -17,11 +17,19 @@ body {
 .card-content {
     padding: 0.75rem 1rem;
 }
-.info-border {
-    width: min(98%, 800px);
+.info-border-wi {
+    width: min(98%, 1100px);
     align-items: center;
     border: 0.5px solid;
     border-radius: 4px;
+    position: relative;
+    display: inline-flex;
+}
+.info-border {
+    width: min(100%, 800px);
+    align-items: center;
+    border-right: 0.5px solid;
+    /* border-radius: 4px; */
     position: relative;
 }
 .card-info {
@@ -42,4 +50,12 @@ body {
 }
 .wo-border {
     border: none;
+}
+.card-indicator {
+    font-size: 0.85rem;
+    width: 28%;
+    align-items: center;
+    padding: calc(0.75em - 1px) calc(0.75rem - 1px);
+    position: relative;
+    box-sizing: border-box;
 }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Homework 5: Stacked Bar Charts </title>
     <link rel="stylesheet" href="./311554012.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
 </head>
 <body>
@@ -20,32 +21,43 @@
             <div class="card-content">
                 <!-- main program -->
                 <span> Touch any data bar to show the details: </span><br>
-                <div class="info-border">
-                    <div class="card-info">
-                        <div>
-                            <label for="class-select"> School : </label>
-                            <label id="class-label"></label>
+                <div class="info-border-wi">
+                    <div class="info-border">
+                        <div class="card-info">
+                            <div>
+                                <label for="class-select"> School : </label>
+                                <label id="class-label"></label>
+                            </div>
+                        </div>
+                        <div class="card-info wo-border">
+                            <div class="card-subinfo">
+                                <label for="sort-by-select"> Sort by = </label>
+                                <select id="sort-by-select"></select>
+                                <label id="sort-by-label"></label>
+                            </div>
+                            <div class="card-subinfo">
+                                <label for="order-select"> Order = </label>
+                                <select id="order-select">
+                                    <option value="ascending"> ascending </option>
+                                    <option value="descending"> descending </option>
+                                </select>
+                                <label id="order-label"></label>
+                            </div>
+                            <div class="card-subinfo">
+                                <label for="amount-select"> Amount = </label>
+                                <select id="amount-select"></select>
+                                <label id="amount-label"></label>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-info wo-border">
-                        <div class="card-subinfo">
-                            <label for="sort-by-select"> Sort by = </label>
-                            <select id="sort-by-select"></select>
-                            <label id="sort-by-label"></label>
-                        </div>
-                        <div class="card-subinfo">
-                            <label for="order-select"> Order = </label>
-                            <select id="order-select">
-                                <option value="ascending"> ascending </option>
-                                <option value="descending"> descending </option>
-                            </select>
-                            <label id="order-label"></label>
-                        </div>
-                        <div class="card-subinfo">
-                            <label for="amount-select"> Amount = </label>
-                            <select id="amount-select"></select>
-                            <label id="amount-label"></label>
-                        </div>
+                    <div class="card-indicator">
+                        <span> <i class="fa fa-square" style="color:#9ac8eb"></i> overall </span>
+                        <span> <i class="fa fa-square" style="color:#d9a7c7"></i> teaching </span>
+                        <span> <i class="fa fa-square" style="color:#81C784"></i> research </span>
+                        <span> <i class="fa fa-square" style="color:#f3c7d5"></i> citations </span>
+                        <br>
+                        <span> <i class="fa fa-square" style="color:#90A4AE"></i> industry_income </span>
+                        <span> <i class="fa fa-square" style="color:#f9c995"></i> international_outlook </span>
                     </div>
                 </div>
                 <div id="stacked-bar-chart"></div>
