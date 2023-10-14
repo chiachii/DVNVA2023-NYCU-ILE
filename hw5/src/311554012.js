@@ -21,12 +21,11 @@ const svg = d3.select('#stacked-bar-chart')
 // Render Function
 const render = data => {
     // `groups`: the name of each school 
-    const groups = data.map(d => (d.name)).slice(0, 50);
+    const groups = data.map(d => (d.name)).slice(0, 100);
 
     // `subgroups`: the header we need in the csv file
-    const subgroups = data.columns.slice(2, 14).filter(item => !item.includes('rank'));
+    var subgroups = data.columns.slice(2, 14).filter(item => !item.includes('rank'));
 
-    // TODO:
     // Preprocessing: delete rows without the value of 'score_overall'
     data.forEach(d => {
         if (isNaN(d['rank']) && d['rank'].startsWith('=')) {
@@ -34,7 +33,7 @@ const render = data => {
             d['rank'] = d['rank'].replace('=', '');
         }
     });
-    data = data.filter(d => !isNaN(d['rank'])).slice(0, 50);
+    data = data.filter(d => !isNaN(d['rank'])).slice(0, 100);
     // console.log(data);
 
     // Add X axis
@@ -70,7 +69,6 @@ const render = data => {
     // Stack the data? --> stack per subgroup
     const stackedData = d3.stack()
         .keys(subgroups)
-        // .keys([subgroups[0], subgroups[2]])
         (data);
     // console.log(stackedData)
     
@@ -89,4 +87,48 @@ const render = data => {
             .attr('y', d => yScale(d[1]))
             .attr('height', d => yScale(d[0]) - yScale(d[1]))
             .attr('width', xScale.bandwidth());
+
+    // `sort-by-selector`: re-plot based on change of the `sort-by-select` selector
+    const sortSelect = d3.select('#sort-by-select');
+    const sortOptions = ['overall', 'teaching', 'research', 'citations', 'industry_income', 'international_outlook'];
+    
+    sortSelect.selectAll('option')
+        .data(sortOptions)
+        .enter()
+        .append('option')
+        .text(d => d)
+        .attr('value', d => d);
+
+    sortSelect.on('change', function() {
+            const selectedFeature = 'scores_' + this.value;
+
+            // Sort the data based on selected option
+            data.sort((a, b) => b[selectedFeature] - a[selectedFeature]);
+
+            // Update the order of data stacks
+            subgroups = [selectedFeature, ...subgroups.filter(item => item !== selectedFeature)];
+
+            // Update the stacked data
+            const updatedStackedData = d3.stack()
+                .keys(subgroups)
+                (data);
+
+            // Update charts
+            svg.selectAll('rect').remove();
+
+            svg.append('g')
+                .selectAll('g')
+                .data(updatedStackedData)
+                .join('g')
+                .attr('fill', d => colorScale(d.key))
+                .selectAll('rect')
+                    .data(d => d)
+                    .join('rect')
+                    .attr('x', (d, i) => xScale(i+1)+10)
+                    .attr('y', d => yScale(d[1]))
+                    .attr('height', d => yScale(d[0]) - yScale(d[1]))
+                    .transition()
+                    .duration(500)
+                    .attr('width', xScale.bandwidth());
+        });
 }; 
