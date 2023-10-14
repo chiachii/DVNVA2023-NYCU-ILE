@@ -81,7 +81,7 @@ const render = (data, order, amount) => {
         .padding([0.5]);
 
     svg.append('g')
-        .attr('transform', `translate(10, ${height})`)
+        .attr('transform', `translate(30, ${height})`)
         .call(d3.axisBottom(xScale))
             .selectAll('text')
             .style('font-size', 10)
@@ -96,7 +96,7 @@ const render = (data, order, amount) => {
         .range([height, 0]);
         
     svg.append('g')
-        .attr('transform', `translate(10, 0)`)
+        .attr('transform', `translate(30, 0)`)
         .call(d3.axisLeft(yScale));
     
     // colorScale = one color per subgroup
@@ -119,7 +119,7 @@ const render = (data, order, amount) => {
             .selectAll('rect')
             .data(d => d) // Add all rectangles: loop based on subgroup
             .join('rect')
-            .attr('x', d => xScale(d.data.rank)+10)
+            .attr('x', d => xScale(d.data.rank)+30)
             .attr('y', d => yScale(d[1]))
             .attr('height', d => yScale(d[0]) - yScale(d[1]))
             .transition()
@@ -162,7 +162,7 @@ const render = (data, order, amount) => {
                 .selectAll('rect')
                     .data(d => d)
                     .join('rect')
-                    .attr('x', d => xScale(d.data.rank)+10)
+                    .attr('x', d => xScale(d.data.rank)+30)
                     .attr('y', d => yScale(d[1]))
                     .attr('height', d => yScale(d[0]) - yScale(d[1]))
                     .transition()
@@ -173,7 +173,26 @@ const render = (data, order, amount) => {
             tooltip();
         });
     
-    // `order-selector`: re-plot based on change of the `order-select` selector
+    // Add axis names at left side and bottom side
+    // Left side
+    svg.selectAll('.column-label-left')
+        .data(['Cumulative Score'])
+        .enter().append('text')
+        .text(d => d)
+        .style('font-size', 14)
+        .attr('text-anchor', 'end')
+        .attr('transform', `translate(-5, ${height*0.37}) rotate(-90)`)
+        .attr('class', 'column-label-left');
+    
+    // Bottom side
+    svg.selectAll('.column-label-bottom')
+        .data(['Rank'])
+        .enter().append('text')
+        .text(d => d)
+        .style('font-size', 14)
+        .attr('text-anchor', 'middle')
+        .attr('transform', `translate(${width/2+50}, ${height+40})`)
+        .attr('class', 'column-label-bottom');
     
     // TODO:
     // Tooltip
