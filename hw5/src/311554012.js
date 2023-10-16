@@ -18,6 +18,9 @@ d3.csv('../data/TIMES_WorldUniversityRankings_2024.csv').then(data => {
     d3.select('#amount-select').on('change', function() {
         amount = +this.value; // Global Scope
 
+        // Reset the value of `sort-by-select`
+        d3.select('#sort-by-select').property('value', 'overall');
+
         // Update charts
         svg.selectAll('g').remove();
         render(data, order, amount);
@@ -27,6 +30,9 @@ d3.csv('../data/TIMES_WorldUniversityRankings_2024.csv').then(data => {
     d3.select('#order-select').on('change', function() {
         order = this.value; 
 
+        // Reset the value of `sort-by-select`
+        d3.select('#sort-by-select').property('value', 'overall');
+        
         // Update charts
         svg.selectAll('g').remove();
         render(data, order, amount);
