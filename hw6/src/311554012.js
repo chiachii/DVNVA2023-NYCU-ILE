@@ -11,8 +11,64 @@ d3.csv('../data/ma_lga_12345.csv').then(data => {
     data.sort((a, b) => a.saledate - b.saledate);
     
     // Initialization
-    // console.log(data);
-    render(data);
+    const types = Array.from(new Set(data.map(d => `${d.type}-${d.bedrooms}b`))).sort();
+    render(data, types);
+
+    // `reorder-controller`: use to get the new order after the user drag the items
+    const draggableContainers = document.querySelectorAll('.draggable');
+    let draggedItem = null;
+
+    // `array_swap`: swap the position of specific elements in array
+    function array_swap(arr, index1, index2) {
+        if (index1 < 0 || index1 >= arr.length || index2 < 0 || index2 >= arr.length) {
+            // check the index is legal or not
+            console.error("Invalid index");
+            return arr;
+        }
+    
+        // swap the elements
+        [arr[index1], arr[index2]] = [arr[index2], arr[index1]];
+    
+        return arr;
+    }
+
+    // Add event listener
+    draggableContainers.forEach(container => {
+        container.addEventListener('dragstart', (event) => {
+            // record the dragging item
+            draggedItem = container;
+        });
+
+        container.addEventListener('dragover', (event) => {
+            container.style.background = 'lightgray';
+            event.preventDefault();
+        });
+
+        container.addEventListener('dragleave', (event) => {
+            container.style.background = '';
+        });
+
+        container.addEventListener('drop', () => {
+            // Change the position of the items
+            container.style.background = '';
+
+            // Swap the positions of the elements in the DOM
+            const temp = document.createElement('div');
+            draggedItem.parentNode.insertBefore(temp, draggedItem); // Add temp element before draggedItem
+            container.parentNode.insertBefore(draggedItem, container);
+            temp.parentNode.insertBefore(container, temp); // Add temp element before container
+            temp.parentNode.removeChild(temp); // Remove temp element
+
+            // Update the order of `types`: swap the positions of the elements in the types array
+            const fromIndex = types.indexOf(draggedItem.textContent.trim());
+            const toIndex = types.indexOf(container.textContent.trim());
+            array_swap(types, fromIndex, toIndex);
+
+            // Update the chart
+            svg.selectAll('g').remove();
+            render(data, types);
+        });
+    });
 });
 
 // Build the Stacked Bar Charts
@@ -30,9 +86,8 @@ const svg = d3.select('#theme-river')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 // Render Function
-const render = (data) => {
+const render = (data, types) => {
     // Data transformation
-    const types = Array.from(new Set(data.map(d => `${d.type}-${d.bedrooms}b`))).sort();
     const newData = [];
     data.forEach(d => {
         const saledate = d.saledate;
@@ -125,16 +180,9 @@ const render = (data) => {
         .y1(d => yScale(d[1]))
         .curve(d3.curveBasis);
     
-    // Create a tooltip
-    const tooltip = svg
-        .append('text')
-        .attr('x', 0)
-        .attr('y', 0)
-        .style('opacity', 0)
-        .style('font-size', 17);
-
     // Show the area
-    svg.selectAll('layers')
+    svg.append('g')
+        .selectAll('layers')
         .data(stackedData)
         .enter()
         .append('path')
@@ -142,8 +190,6 @@ const render = (data) => {
             .style('fill', d => colorMapping[d.key])
             .attr('d', areaGenerator)
             .on('mouseover', function(event,d) {
-                tooltip.style('opacity', 1);
-
                 d3.selectAll('.area')
                     .style('opacity', .2);
 
@@ -152,8 +198,6 @@ const render = (data) => {
                     .style('opacity', 1);
             })
             .on('mouseleave', function(event,d) {
-                tooltip.style('opacity', 0);
-
                 d3.selectAll('.area')
                     .style('opacity', 1)
                     .style('stroke', 'none');
