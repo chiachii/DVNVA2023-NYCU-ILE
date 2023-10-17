@@ -101,10 +101,16 @@ const render = (data) => {
         .attr('transform', `translate(${width/2+40}, ${height+40})`)
         .attr('class', 'column-label-bottom');
     
-    // Create colorScale   
-    const colorScale = d3.scaleOrdinal()
-        .domain(types)
-        .range(['#9ac8eb', '#d9a7c7', '#81C784', '#f3c7d5', '#90A4AE', '#f9c995', '#f0e68c']); 
+    // Create colorMapping: avoid to change color by change the type order
+    const colorMapping = {
+        'house-2b': '#9ac8eb',
+        'house-3b': '#d9a7c7',
+        'house-4b': '#81C784',
+        'house-5b': '#f3c7d5',
+        'unit-1b': '#90A4AE',
+        'unit-2b': '#f9c995',
+        'unit-3b': '#f0e68c'
+    };
 
     // Stack the data
     const stackedData = d3.stack()
@@ -125,7 +131,7 @@ const render = (data) => {
         .attr('x', 0)
         .attr('y', 0)
         .style('opacity', 0)
-        .style('font-size', 17)
+        .style('font-size', 17);
 
     // Show the area
     svg.selectAll('layers')
@@ -133,20 +139,23 @@ const render = (data) => {
         .enter()
         .append('path')
             .attr('class', 'area')
-            .style('fill', d => colorScale(d.key))
+            .style('fill', d => colorMapping[d.key])
             .attr('d', areaGenerator)
             .on('mouseover', function(event,d) {
-                tooltip.style('opacity', 1)
+                tooltip.style('opacity', 1);
+
                 d3.selectAll('.area')
-                    .style('opacity', .2)
+                    .style('opacity', .2);
+
                 d3.select(this)
                     .style('stroke', 'black')
-                    .style('opacity', 1)
+                    .style('opacity', 1);
             })
             .on('mouseleave', function(event,d) {
-                tooltip.style('opacity', 0)
+                tooltip.style('opacity', 0);
+
                 d3.selectAll('.area')
                     .style('opacity', 1)
-                    .style('stroke', 'none')
+                    .style('stroke', 'none');
             });
 };
