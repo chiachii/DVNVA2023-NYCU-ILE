@@ -66,20 +66,41 @@ const render = (data) => {
     // Add X axis
     const xAxis = d3.axisBottom(xScale);
     svg.append('g')
-        .attr('transform', `translate(60, ${height})`)
+        .attr('transform', `translate(40, ${height})`)
         .call(xAxis);
 
     // Create yScale (price)
     const yScale = d3.scaleLinear()
-        .domain([0, 606])
+        .domain([0, 500])
         .range([height, 0]);
 
     // Add Y axis
     const yAxis = d3.axisLeft(yScale).tickFormat(d => d + 'K');
     svg.append('g')
-        .attr('transform', `translate(60, 0)`)
+        .attr('transform', `translate(40, 0)`)
         .call(yAxis);
 
+    // Add axis names at left side and bottom side
+    // Left side
+    svg.selectAll('.column-label-left')
+        .data(['Cumulative MA'])
+        .enter().append('text')
+        .text(d => d)
+        .style('font-size', 14)
+        .attr('text-anchor', 'end')
+        .attr('transform', `translate(-5, ${height*0.37}) rotate(-90)`)
+        .attr('class', 'column-label-left');
+    
+    // Bottom side
+    svg.selectAll('.column-label-bottom')
+        .data(['Time'])
+        .enter().append('text')
+        .text(d => d)
+        .style('font-size', 14)
+        .attr('text-anchor', 'middle')
+        .attr('transform', `translate(${width/2+40}, ${height+40})`)
+        .attr('class', 'column-label-bottom');
+    
     // Create colorScale   
     const colorScale = d3.scaleOrdinal()
         .domain(types)
@@ -93,7 +114,7 @@ const render = (data) => {
 
     // Area generator
     var areaGenerator = d3.area()
-        .x(d => xScale(d.data.saledate)+60)
+        .x(d => xScale(d.data.saledate)+40)
         .y0(d => yScale(d[0]))
         .y1(d => yScale(d[1]))
         .curve(d3.curveBasis);
