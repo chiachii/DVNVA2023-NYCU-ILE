@@ -111,7 +111,7 @@ const render = (data, types) => {
             newData.push(newEntry);
         }
     });
-    // console.log(newData);
+    console.log(newData);
 
     // Create xScale (time)
     const xScale = d3.scaleTime()
@@ -220,10 +220,24 @@ const render = (data, types) => {
                 d3.select(this)
                     .style('stroke', 'black')
                     .style('opacity', 1);
+
+                svg.selectAll('.price-label')
+                    .data(newData)
+                    .enter()
+                    .append('text')
+                        .text(data => String(data[d.key]) + 'K')
+                        .style('font-size', 10)
+                        .style('fill', '#ed7b64')
+                        .attr('text-anchor', 'start')
+                        .attr('transform', data => `translate(${xScale(data.saledate) + 42}, ${40}) rotate(90)`)
+                        .attr('class', 'price-label');
+
             })
             .on('mouseleave', function(event, d) {
                 d3.selectAll('.area')
                     .style('opacity', 1)
                     .style('stroke', 'none');
+                
+                svg.selectAll('.price-label').remove();
             });
 };
