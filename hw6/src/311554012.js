@@ -123,10 +123,34 @@ const render = (data, types) => {
     svg.append('g')
         .attr('transform', `translate(40, ${height})`)
         .call(xAxis);
+    
+    // Add gray line for showing the date in detail
+    svg.selectAll('.date-line')
+        .data(newData)
+        .enter()
+        .append('line')
+            .attr('class', 'date-line')
+            .attr('value', d => d.saledate)
+            .attr('x1', d => xScale(d.saledate) + 40)
+            .attr('x2', d => xScale(d.saledate) + 40)
+            .attr('y1', 0)
+            .attr('y2', height)
+            .attr('stroke', '#D3D3D3')
+            .attr('stroke-width', 1);
+
+    svg.selectAll('.date-label') // Show the date on above lines
+        .data(newData)
+        .enter()
+        .append('text')
+            .text(d => String(d.saledate).slice(4, 10))
+            .style('font-size', 10)
+            .attr('text-anchor', 'middle')
+            .attr('transform', d => `translate(${xScale(d.saledate) + 42}, ${15}) rotate(90)`)
+            .attr('class', 'date-label');
 
     // Create yScale (price)
     const yScale = d3.scaleLinear()
-        .domain([0, 500])
+        .domain([0, 650])
         .range([height, 0]);
 
     // Add Y axis
@@ -189,7 +213,7 @@ const render = (data, types) => {
             .attr('class', 'area')
             .style('fill', d => colorMapping[d.key])
             .attr('d', areaGenerator)
-            .on('mouseover', function(event,d) {
+            .on('mouseover', function(event, d) {
                 d3.selectAll('.area')
                     .style('opacity', .2);
 
@@ -197,7 +221,7 @@ const render = (data, types) => {
                     .style('stroke', 'black')
                     .style('opacity', 1);
             })
-            .on('mouseleave', function(event,d) {
+            .on('mouseleave', function(event, d) {
                 d3.selectAll('.area')
                     .style('opacity', 1)
                     .style('stroke', 'none');
