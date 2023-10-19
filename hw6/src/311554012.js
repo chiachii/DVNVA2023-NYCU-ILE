@@ -111,7 +111,7 @@ const render = (data, types) => {
             newData.push(newEntry);
         }
     });
-    console.log(newData);
+    // console.log(newData);
 
     // Create xScale (time)
     const xScale = d3.scaleTime()
@@ -201,8 +201,8 @@ const render = (data, types) => {
     var areaGenerator = d3.area()
         .x(d => xScale(d.data.saledate)+40)
         .y0(d => yScale(d[0]))
-        .y1(d => yScale(d[1]))
-        .curve(d3.curveBasis);
+        .y1(d => yScale(d[1]));
+        // .curve(d3.curveBasis);
     
     // Show the area
     svg.append('g')
