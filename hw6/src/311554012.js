@@ -71,7 +71,7 @@ d3.csv('../data/ma_lga_12345.csv').then(data => {
     });
 });
 
-// Build the Stacked Bar Charts
+// Build the ThemeRiver
 // Define the SVG dimensions and margins 
 const margin = { top: 20, right: 20, bottom: 20, left: 20};
 const width = 1000 - margin.left - margin.right;
