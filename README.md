@@ -8,7 +8,7 @@ Data Visualization and Visual Analytics(2023) at National Yang Ming Chiao Tung U
 * **hw3:** [Correlation Matrix](http://7f94c403e213c784.vis.lab.djosix.com:2023/)
 * **hw4:** [Brushable Scatter Plot Matrix](http://6c458b7592542677.vis.lab.djosix.com:2023/)
 * **hw5:** [Stacked Bar Chart](http://449ebab9eee76d62.vis.lab.djosix.com:2023/)
-* **hw6:** [ThemeRiver](http://f27fcf92286c91f8.vis.lab.djosix.com:2023/)
+* **hw6:** [ThemeRiver](http://b01653a541cf91c8.vis.lab.djosix.com:2023/)
 * **hw7:** Horizen Chart
 * **hw8:** Sankey Diagram
 * **hw9:** Spotiy Tracks Dataset
