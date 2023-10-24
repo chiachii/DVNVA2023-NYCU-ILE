@@ -1,6 +1,8 @@
 // Load the dataset
 d3.csv('../data/air-pollution.csv').then(data => {
     // Define the default (global) value: `pollution`
+    var startDate = '2017-01-01'
+    var endDate = '2019-12-31'
     var pollution = 'CO';
 
     // `pollution-selector`: re-plot based on change of the `pollution-select` selector
@@ -19,9 +21,26 @@ d3.csv('../data/air-pollution.csv').then(data => {
 
         // Update charts
         svg.selectAll('g').remove();
-        render(data, pollution);
+        render(data, pollution, startDate, endDate);
     });
     
+    // `date-range-selector`: get the value of the `start-date` and `end-date`
+    d3.select('#start-date').on('change', function() {
+        startDate = this.value; // Global Scope
+
+        // Update charts
+        svg.selectAll('g').remove();
+        render(data, pollution, startDate, endDate);
+    });
+
+    d3.select('#end-date').on('change', function() {
+        endDate = this.value; // Global Scope
+
+        // Update charts
+        svg.selectAll('g').remove();
+        render(data, pollution, startDate, endDate);
+    });
+
     // Preprocessing
     data.forEach(d => {
         d['Address'] = d['Address'].replace(', Seoul, Republic of Korea', '');
@@ -37,7 +56,7 @@ d3.csv('../data/air-pollution.csv').then(data => {
 
     // Initialization
     // console.log(data);
-    render(data, pollution);
+    render(data, pollution, startDate, endDate);
 });
 // Build the Horizon Chart
 // Define the SVG dimensions and margins 
@@ -54,7 +73,7 @@ const svg = d3.select('#horizon-chart')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 // Render Function
-const render = (data, pollution) => {
+const render = (data, pollution, startDate, endDate) => {
     // Create `newData`: Group the data by 'Address' & Compute the mean value of each pollution by date
     const newData = [];
     data.forEach(d => {
@@ -62,24 +81,27 @@ const render = (data, pollution) => {
         var addrKey = d['Address'];
         var dateKey = d['Measurement date'].slice(0, 10);
 
-        // Create entries for each 'Address'
-        if (!newData[addrKey]) {
-            newData[addrKey] = {};
-        };
-        // If the date does not in the 'Address', then create one
-        if (!newData[addrKey][dateKey]) {
-            newData[addrKey][dateKey] = {
-                'CO': 0, 'NO2': 0, 'O3': 0, 'PM2.5': 0, 'PM10': 0, 'SO2': 0
+        // Check if the date is within the selected range
+        if (new Date(startDate) <= new Date(dateKey) && new Date(dateKey) <= new Date(endDate)) {
+            // Create entries for each 'Address'
+            if (!newData[addrKey]) {
+                newData[addrKey] = {};
             };
-        };
+            // If the date does not in the 'Address', then create one
+            if (!newData[addrKey][dateKey]) {
+                newData[addrKey][dateKey] = {
+                    'CO': 0, 'NO2': 0, 'O3': 0, 'PM2.5': 0, 'PM10': 0, 'SO2': 0
+                };
+            };
 
-        // Accumulate the mean of pollution value
-        newData[addrKey][dateKey]['CO'] += d['CO']/24;
-        newData[addrKey][dateKey]['NO2'] += d['NO2']/24;
-        newData[addrKey][dateKey]['O3'] += d['O3']/24;
-        newData[addrKey][dateKey]['PM2.5'] += d['PM2.5']/24;
-        newData[addrKey][dateKey]['PM10'] += d['PM10']/24;
-        newData[addrKey][dateKey]['SO2'] += d['SO2']/24;
+            // Accumulate the mean of pollution value
+            newData[addrKey][dateKey]['CO'] += d['CO']/24;
+            newData[addrKey][dateKey]['NO2'] += d['NO2']/24;
+            newData[addrKey][dateKey]['O3'] += d['O3']/24;
+            newData[addrKey][dateKey]['PM2.5'] += d['PM2.5']/24;
+            newData[addrKey][dateKey]['PM10'] += d['PM10']/24;
+            newData[addrKey][dateKey]['SO2'] += d['SO2']/24;
+        };
     });
     console.log(newData);
 
@@ -106,11 +128,11 @@ const render = (data, pollution) => {
     
         // Create xScale (time)
         const xScale = d3.scaleTime()
-            .domain([new Date('2017-01-01'), new Date('2019-12-31')])
+            .domain([new Date(startDate), new Date(endDate)])
             .range([0, width]);
 
         // Create yScale (pollution)
-        console.log([d3.min(Object.values(newData[addr]), d => d[pollution]), d3.max(Object.values(newData[addr]), d => d[pollution])])
+        // console.log([d3.min(Object.values(newData[addr]), d => d[pollution]), d3.max(Object.values(newData[addr]), d => d[pollution])])
         const yScale = d3.scaleLinear()
             .domain([d3.min(Object.values(newData[addr]), d => d[pollution]), d3.max(Object.values(newData[addr]), d => d[pollution])]) // Choose the pollution
             .range([height/21, 0]);
@@ -139,7 +161,7 @@ const render = (data, pollution) => {
 
     // Create xScale (time)
     const xScale = d3.scaleTime()
-        .domain([new Date('2017-01-01'), new Date('2019-12-31')])
+        .domain([new Date(startDate), new Date(endDate)])
         .range([0, width]);
 
     // Add X axis

@@ -27,8 +27,12 @@
                         <label id="pollution-label"></label>
                     </div>
                     <div class="sub-controller">
-                        <label for="pollution-select"> Time Range: </label>
-                        <!-- TODO -->
+                        <label for="date-range-select"> Time Range: </label>
+                        <span>
+                            <input type="date" id="start-date" value="2017-01-01" min="2017-01-01" max="2019-12-31">
+                             ~ 
+                            <input type="date" id="end-date" value="2019-12-31" min="2017-01-01" max="2019-12-31">
+                        </span>
                     </div>
                 </div>
                 <div id="horizon-chart"></div>
