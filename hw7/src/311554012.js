@@ -25,8 +25,16 @@ d3.csv('../data/air-pollution.csv').then(data => {
     });
     
     // `date-range-selector`: get the value of the `start-date` and `end-date`
+    // Set the range of date can be selected
+    document.getElementById('start-date').setAttribute('max', document.getElementById('end-date').value);
+    document.getElementById('end-date').setAttribute('min', document.getElementById('start-date').value);
+    
+    // Event Listeners
     d3.select('#start-date').on('change', function() {
         startDate = this.value; // Global Scope
+        
+        // Update range
+        document.getElementById('end-date').setAttribute('min', document.getElementById('start-date').value);
 
         // Update charts
         svg.selectAll('g').remove();
@@ -35,6 +43,9 @@ d3.csv('../data/air-pollution.csv').then(data => {
 
     d3.select('#end-date').on('change', function() {
         endDate = this.value; // Global Scope
+
+        // Update range
+        document.getElementById('start-date').setAttribute('max', document.getElementById('end-date').value);
 
         // Update charts
         svg.selectAll('g').remove();
@@ -103,7 +114,7 @@ const render = (data, pollution, startDate, endDate) => {
             newData[addrKey][dateKey]['SO2'] += d['SO2']/24;
         };
     });
-    console.log(newData);
+    // console.log(newData);
 
     // Create colorMapping
     const colorMapping = {

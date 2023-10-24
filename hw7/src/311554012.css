@@ -34,3 +34,6 @@ body {
     align-items: center;
     position: relative;
 }
+.date-range-select {
+    width: 110px;
+}
