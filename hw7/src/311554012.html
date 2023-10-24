@@ -27,12 +27,13 @@
                         <label id="pollution-label"></label>
                     </div>
                     <div class="sub-controller">
-                        <label for="date-range-select"> Time Range: </label>
-                        <span>
-                            <input type="date" class="date-range-select" id="start-date" value="2017-01-01" min="2017-01-01">
-                             ~ 
-                            <input type="date" class="date-range-select" id="end-date" value="2019-12-31" max="2019-12-31">
-                        </span>
+                        <label for="date-select"> Year: </label>
+                        <select id="date-select">
+                            <option value="2017"> 2017 </option>
+                            <option value="2018"> 2018 </option>
+                            <option value="2019"> 2019 </option>
+                        </select>
+                        <label id="date-label"></label>
                     </div>
                     <div class="indicator">
                         <span> <i class="fa fa-square" style="color:#9ac8eb"></i> CO </span>

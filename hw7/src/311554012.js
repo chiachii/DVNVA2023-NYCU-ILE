@@ -2,7 +2,7 @@
 d3.csv('../data/air-pollution.csv').then(data => {
     // Define the default (global) value: `pollution`
     var startDate = '2017-01-01'
-    var endDate = '2019-12-31'
+    var endDate = '2017-12-31'
     var pollution = 'CO';
 
     // `pollution-selector`: re-plot based on change of the `pollution-select` selector
@@ -24,28 +24,10 @@ d3.csv('../data/air-pollution.csv').then(data => {
         render(data, pollution, startDate, endDate);
     });
     
-    // `date-range-selector`: get the value of the `start-date` and `end-date`
-    // Set the range of date can be selected
-    document.getElementById('start-date').setAttribute('max', document.getElementById('end-date').value);
-    document.getElementById('end-date').setAttribute('min', document.getElementById('start-date').value);
-    
-    // Event Listeners
-    d3.select('#start-date').on('change', function() {
-        startDate = this.value; // Global Scope
-        
-        // Update range
-        document.getElementById('end-date').setAttribute('min', document.getElementById('start-date').value);
-
-        // Update charts
-        svg.selectAll('g').remove();
-        render(data, pollution, startDate, endDate);
-    });
-
-    d3.select('#end-date').on('change', function() {
-        endDate = this.value; // Global Scope
-
-        // Update range
-        document.getElementById('start-date').setAttribute('max', document.getElementById('end-date').value);
+    // `date-selector`: update the value of the `startDate` and `endDate`
+    d3.select('#date-select').on('change', function() {
+        startDate = this.value + '-01-01';
+        endDate = this.value + '-12-31';
 
         // Update charts
         svg.selectAll('g').remove();
