@@ -17,8 +17,11 @@ body {
 .card-content {
     padding: 0.75rem 1rem;
 }
+.ml-20 {
+    margin-left: 20px;
+}
 .control-bar {
-    width: min(98%, 600px);
+    width: min(98%, 900px);
     align-items: center;
     border: 0.5px solid;
     border-radius: 4px;

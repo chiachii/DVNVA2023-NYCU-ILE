@@ -54,7 +54,7 @@ d3.csv('../data/air-pollution.csv').then(data => {
 // Build the Horizon Chart
 // Define the SVG dimensions and margins 
 const margin = { top: 20, right: 20, bottom: 20, left: 20};
-const width = 1200 - margin.left - margin.right;
+const width = 1000 - margin.left - margin.right;
 const height = 600 - margin.top - margin.bottom;
 
 // Create the SVG container
@@ -162,4 +162,96 @@ const render = (data, pollution, startDate, endDate) => {
     svg.append('g')
         .attr('transform', `translate(0, 0)`)
         .call(xAxis);
-}; 
+    
+    // Add axis names at left side
+    svg.selectAll('.column-label-left')
+        .data(['Mean Value'])
+        .enter().append('text')
+        .text(d => d)
+        .style('font-size', 14)
+        .attr('text-anchor', 'end')
+        .attr('transform', `translate(-10, ${height*0.5}) rotate(-90)`)
+        .attr('class', 'column-label-left');
+    
+    // Tooltip: used to display daily values ​​in detail
+    // Add a `timeline` element to HTML
+    svg.selectAll('.time-line').remove();
+    const timeLine = svg.append('line')
+        .attr('class', 'time-line')
+        .attr('x1', 0)
+        .attr('x2', 0)
+        .attr('y1', 0)
+        .attr('y2', height*25/21)
+        .style('stroke', 'red')
+        .style('stroke-width', 1);
+    
+    svg.selectAll('.time-label').remove();
+    svg.selectAll('.time-label')
+        .data(['01-01'])
+        .enter().append('text')
+        .text(d => d)
+        .style('font-size', 10)
+        .style('fill', 'red')
+        .attr('x', 0)
+        .attr('y', -5)
+        .attr('class', 'time-label');
+        
+    // `addr-selector`: re-plot based on change of the `addr-select` selector
+    const addrSelect = d3.select('#addr-select');
+    const addrOptions = Object.keys(newData);
+    
+    addrSelect.selectAll('option')
+        .data(addrOptions)
+        .enter()
+        .append('option')
+        .text(d => d)
+        .attr('value', d => d);
+
+    // Show the initial value
+    var selectedDate = xScale.invert(0).toISOString().split('T')[0];
+    var addr = document.getElementById('addr-select').value;
+    var value = newData[addr][selectedDate][pollution].toFixed(3);
+    var valueLabel = d3.select('#value-label')
+    valueLabel.text(`${value}`)
+        .style('font-size', 10)
+        .style('color', 'red');
+
+    // Event Listener
+    svg.on('click', function(event) {
+        const [x, y] = [event.pageX, event.pageY]; // Get the position of click
+        const xScale = d3.scaleTime()
+            .domain([new Date(startDate), new Date(endDate)])
+            .range([0, width]);
+        selectedDate = xScale.invert(x - 44).toISOString().split('T')[0]; // Get the time point corresponding to the click position
+        // Update the tooltip position
+        timeLine.attr('x1', x - 44).attr('x2', x - 44);
+
+        // Update date at top of `timeline`
+        svg.selectAll('.time-label').remove();
+        svg.selectAll('.time-label')
+            .data([selectedDate.slice(5,)])
+            .enter().append('text')
+            .text(d => d)
+            .style('font-size', 10)
+            .style('fill', 'red')
+            .attr('x', x - 44)
+            .attr('y', -5)
+            .attr('class', 'time-label');
+
+        // Show the value
+        addr = document.getElementById('addr-select').value;
+        value = newData[addr][selectedDate][pollution].toFixed(3);
+        valueLabel.text(`${value}`)
+            .style('font-size', 10)
+            .style('color', 'red');
+    });
+
+    addrSelect.on('change', function(event) {
+        // Show the value
+        addr = document.getElementById('addr-select').value;
+        value = newData[addr][selectedDate][pollution].toFixed(3);
+        valueLabel.text(`${value}`)
+            .style('font-size', 10)
+            .style('color', 'red');
+    });
+};

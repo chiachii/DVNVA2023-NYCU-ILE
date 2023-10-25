@@ -20,6 +20,7 @@
             </header>
             <div class="card-content">
                 <!-- main program -->
+                <span class="ml-20"> Choosing an address and clicking on the time-axis or charts, it will display detailed data: </span><br>
                 <div class="control-bar">
                     <div class="sub-controller">
                         <label for="pollution-select"> Pollution: </label>
@@ -35,13 +36,14 @@
                         </select>
                         <label id="date-label"></label>
                     </div>
-                    <div class="indicator">
-                        <span> <i class="fa fa-square" style="color:#9ac8eb"></i> CO </span>
-                        <span> <i class="fa fa-square" style="color:#d9a7c7"></i> NO2 </span>
-                        <span> <i class="fa fa-square" style="color:#81C784"></i> O3 </span>
-                        <span> <i class="fa fa-square" style="color:#f3c7d5"></i> PM2.5 </span>
-                        <span> <i class="fa fa-square" style="color:#90A4AE"></i> PM10 </span>
-                        <span> <i class="fa fa-square" style="color:#f9c995"></i> SO2 </span>
+                    <div class="sub-controller">
+                        <label for="addr-select"> Address: </label>
+                        <select id="addr-select"></select>
+                        <label id="addr-label"></label>
+                    </div>
+                    <div class="sub-controller">
+                        <label for="value-label"> Value(mean) = </label>
+                        <label id="value-label"></label>
                     </div>
                 </div>
                 <div id="horizon-chart"></div>
