@@ -19,5 +19,5 @@ Craft a horizon chart to represent air pollution data using D3.
 
 - **Interactivity (optional):** <br> Add features like tooltips for detailed daily values or zoom capabilities to focus on specific periods.
 
-<!-- ### References
-[1]  -->
+### References
+[1] [D3 Horizon Chart - Drawing horizon charts in the browser and node](https://kmandov.github.io/d3-horizon-chart/)
