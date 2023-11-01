@@ -21,7 +21,7 @@ body {
     margin-left: 20px;
 }
 .control-bar {
-    width: min(98%, 900px);
+    width: min(98%, 650px);
     align-items: center;
     border: 0.5px solid;
     border-radius: 4px;
@@ -33,13 +33,7 @@ body {
 }
 .sub-controller {
     font-size: 0.87rem;
-    padding-right: 30px;
+    padding-right: 50px;
     align-items: center;
     position: relative;
-}
-.date-range-select {
-    width: 110px;
-}
-.indicator {
-    font-size: 0.87rem;
 }
