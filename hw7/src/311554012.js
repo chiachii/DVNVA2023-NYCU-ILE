@@ -228,57 +228,128 @@ function HorizonChart(data, {
         .y0(yScale(0))
         .y1(i => yScale(Y[i]));
     
-    const svg = d3.create("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("viewBox", [0, 0, width, height])
-        .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
-        // .attr('stroke', '#000000') // Modify: add stroke
-        // .attr('stroke-width', 0.1) 
-        .attr("font-family", "sans-serif")
-        .attr("font-size", 10);
+    const svg = d3.create('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('viewBox', [0, 0, width, height])
+        .attr('style', 'max-width: 100%; height: auto; height: intrinsic;')
+        .attr('stroke', '#000000') // Modify: add stroke
+        .attr('stroke-width', 0.1) 
+        .attr('font-family', 'sans-serif')
+        .attr('font-size', 10);
   
-    const g = svg.selectAll("g")
+    const g = svg.selectAll('g')
       .data(d3.group(I, i => Z[i]))
-      .join("g")
-        .attr("transform", (_, i) => `translate(0,${i * size + marginTop})`);
+      .join('g')
+        .attr('transform', (_, i) => `translate(0,${i * size + marginTop})`);
   
-    const defs = g.append("defs");
+    const defs = g.append('defs');
   
-    defs.append("clipPath")
-        .attr("id", (_, i) => `${uid}-clip-${i}`)
-      .append("rect")
-        .attr("y", padding)
-        .attr("width", width)
-        .attr("height", size - padding);
+    defs.append('clipPath')
+        .attr('id', (_, i) => `${uid}-clip-${i}`)
+      .append('rect')
+        .attr('y', padding)
+        .attr('width', width)
+        .attr('height', size - padding);
   
-    defs.append("path")
-        .attr("id", (_, i) => `${uid}-path-${i}`)
-        .attr("d", ([, I]) => area(I));
+    defs.append('path')
+        .attr('id', (_, i) => `${uid}-path-${i}`)
+        .attr('d', ([, I]) => area(I));
   
-    g.attr("clip-path", (_, i) => `url(${new URL(`#${uid}-clip-${i}`, location)})`)
-      .selectAll("use")
+    g.attr('clip-path', (_, i) => `url(${new URL(`#${uid}-clip-${i}`, location)})`)
+      .selectAll('use')
       .data((d, i) => new Array(bands).fill(i))
-      .join("use")
-        .attr("fill", (_, i) => colors[i + Math.max(0, 3 - bands)])
-        .attr("transform", (_, i) => `translate(0,${i * size})`)
-        .attr("xlink:href", (i) => `${new URL(`#${uid}-path-${i}`, location)}`);
+      .join('use')
+        .attr('fill', (_, i) => colors[i + Math.max(0, 3 - bands)])
+        .attr('transform', (_, i) => `translate(0,${i * size})`)
+        .attr('xlink:href', (i) => `${new URL(`#${uid}-path-${i}`, location)}`);
   
-    g.append("text")
-        .attr("x", marginLeft)
-        .attr("y", (size + padding) / 2)
-        .attr("dy", "0.35em")
+    g.append('text')
+        .attr('x', marginLeft)
+        .attr('y', (size + padding) / 2)
+        .attr('dy', '0.35em')
         .text(([z]) => z);
-  
+    
+    // Show the value based on mouse event
+    // Create an array to store all value elements
+    const valueElements = [];
+    // Iterate through each subchart and add a value element for each
+    const valueElement = g.append('text')
+        .attr('class', 'info-text')
+        .attr('x', marginLeft)
+        .attr('y', (size + padding) / 2 + 13)
+        .attr('dy', '0.35em')
+        .style('fill', '#1A43BF')
+        .style('pointer-events', 'none');
+
     // Since there are normally no left or right margins, don’t show ticks that
     // are close to the edge of the chart, as these ticks are likely to be clipped.
-    svg.append("g")
-        .attr("transform", `translate(0,${marginTop})`)
+    svg.append('g')
+        .attr('transform', `translate(0,${marginTop})`)
         .call(xAxis)
-        .call(g => g.selectAll(".tick")
+        .call(g => g.selectAll('.tick')
           .filter(d => xScale(d) < 10 || xScale(d) > width - 10)
           .remove())
-        .call(g => g.select(".domain").remove());
-  
+        .call(g => g.select('.domain').remove());
+    
+    // Add interactive elements (vertical line and text)
+    const verticalLine = svg.append('line')
+        .attr('class', 'vertical-line')
+        .style('stroke', 'red')
+        .attr('stroke-width', 1)
+        .style('stroke-dasharray', '3,3')
+        .style('pointer-events', 'none')
+        .attr('y1', 0)
+        .attr('y2', height);
+
+    // Show the date based on mouse event
+    const dateElement = svg.append('text')
+        .attr('class', 'info-text')
+        .attr('x', 10)
+        .attr('y', 10)
+        .style('pointer-events', 'none');
+
+    svg.append('rect')
+        .attr('class', 'overlay')
+        .attr('width', width)
+        .attr('height', height)
+        .style('fill', 'none')
+        .style('stroke', 'none')
+        .style('pointer-events', 'all')
+        .on('mouseover', () => {
+            verticalLine.style('display', null);
+            valueElement.style('display', null);
+            dateElement.style('display', null);
+        })
+        .on('mouseout', () => {
+            verticalLine.style('display', 'none');
+            valueElement.style('display', 'none');
+            dateElement.style('display', 'none');
+        })
+        .on('mousemove', mousemove);
+
+    function mousemove(event) {
+        const xPosition = d3.pointer(event)[0];
+        const xDate = xScale.invert(xPosition);
+        const bisectDate = d3.bisector(d => d.date).left;
+        const i = bisectDate(data, xDate, 1);
+        const d0 = data[i - 1];
+        const d1 = data[i];
+        const D = xDate - d0.date > d1.date - xDate ? d1 : d0;
+
+        verticalLine.attr('transform', `translate(${xPosition}, 0)`);
+        dateElement.text(`Date: ${D.date.toDateString().slice(4, 10)}`)
+                    .style('fill', 'red')
+                    .attr('transform', `translate(${xPosition}, 12)`);
+
+        // Show the value for each subchart
+        const Address = Array.from(new Set(data.map(d => d.address)));
+        for (let i = 0; i < 25; i++) {
+            const subChartData = data.filter(d => (d.address === Address[i]) && (String(d.date) == D.date));
+            valueElement._groups[0][i].textContent = `Value: ${subChartData[0].value.toFixed(3)}`;
+        };
+    };
+
+    // Return the chart DOM
     return svg.node();
   }
