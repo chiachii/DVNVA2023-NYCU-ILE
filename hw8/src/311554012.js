@@ -106,7 +106,9 @@ const render = (data) => {
         .layout(1);
 
     // Create `colorScale` to show different color on different combo
-    const colorScale = d3.scaleOrdinal(d3.schemeCategory20);
+    const colorScale = d3.scaleOrdinal()
+        .domain(features)
+        .range(d3.schemeCategory20);
 
     // Add in the links
     const link = svg.append('g')
@@ -116,7 +118,13 @@ const render = (data) => {
         .append('path')
         .attr('class', 'link')
         .attr('d', sankey.link())
-        .style('stroke', d => colorScale(d.source.node))
+        .style('stroke', d => {
+            const sourceColor = colorScale(d.source.name.split('-')[0]);
+            const targetColor = colorScale(d.target.name.split('-')[0]);
+            // Use D3 interpolator to generate mixed colors
+            const colorInterpolator = d3.interpolate(sourceColor, targetColor);
+            return colorInterpolator(0.5); // Adjust the interpolation position to get a darker or lighter color
+        })
         .style('stroke-width', d => Math.max(1, d.dy))
         .sort((a, b) => b.dy - a.dy);
 
@@ -135,8 +143,8 @@ const render = (data) => {
                 .on('drag', function(d, event) {
                     d3.select(this)
                         .attr('transform', `translate(${d.x}, ${d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))})`);
-                        sankey.relayout();
-                        link.attr('d', sankey.link());
+                    sankey.relayout();
+                    link.attr('d', sankey.link());
                 })
             );
     
@@ -144,7 +152,7 @@ const render = (data) => {
     node.append('rect')
         .attr('height', d => d.dy)
         .attr('width', sankey.nodeWidth())
-        .style('fill', d => colorScale(d.node))
+        .style('fill', d => colorScale(d.name.split('-')[0]))
         .style('stroke', '#000000')
         .append('title')
         .text(d => `${d.name}, ${d.node}`)
@@ -157,5 +165,4 @@ const render = (data) => {
         .attr('text-anchor', d => (d.x < width / 2) ? 'start' : 'end')
         .text(d => d.name)
             .style('font-size', '0.85em');
-    
 }; 
