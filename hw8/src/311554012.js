@@ -185,7 +185,37 @@ const render = (data, features) => {
             return colorInterpolator(0.5); // Adjust the interpolation position to get a darker or lighter color
         })
         .style('stroke-width', d => Math.max(1, d.dy))
-        .sort((a, b) => b.dy - a.dy);
+        .on('mouseover', function(d) {
+            // Calculate the ratio of this link
+            var total = 0;
+            d.source.sourceLinks.forEach(link => {
+                total += link.value;
+            });
+
+            const value = d.source.sourceLinks.find(link => link.target.name === d.target.name).value;
+            const ratio = (value / total * 100).toFixed(2);
+            console.log(d.source.name, d.target.name)
+            console.log(ratio)
+
+            // Show the tooltip
+            const tooltip = d3.select('#tooltip');
+            console.log(d)
+            tooltip.style('left', (event.pageX + 10) + 'px')
+                .style('top', (event.pageY - 25) + 'px')
+                .style('display', 'block')
+                .html(`
+                    <span style="color: ${colorMapping[d.source.name.split('-')[0]]}"> ${d.source.name} </sapn>
+                    <span style="color: #000000"> to </span>
+                    <span style="color: ${colorMapping[d.target.name.split('-')[0]]}"> ${d.target.name} </span>
+                    <span style="color: #000000">: ${value} (${ratio}%)</span>
+                `);
+            })
+            .on('mouseout', function() {
+                // Hide the tooltip
+                const tooltip = d3.select('#tooltip');
+                tooltip.style('display', 'none');
+            })
+            .sort((a, b) => b.dy - a.dy);
 
     // Add in the nodes
     const node = svg.append('g')
@@ -196,10 +226,10 @@ const render = (data, features) => {
             .attr('transform', d => `translate(${d.x}, ${d.y})`)
             .call(d3.drag()
                 .subject(d => d)
-                .on('start', function(d, event) {
+                .on('start', function() {
                     this.parentNode.appendChild(this);
                 })
-                .on('drag', function(d, event) {
+                .on('drag', function(d) {
                     // Add the function for moving nodes
                     d3.select(this)
                         .attr('transform', `translate(${d.x}, ${d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))})`);

@@ -45,3 +45,12 @@ body {
 .link:hover {
     stroke-opacity: .8;
 }
+.tooltip {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    display: none;
+    font-size: 0.8rem;
+}
