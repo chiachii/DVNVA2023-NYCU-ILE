@@ -14,8 +14,65 @@ d3.text('../data/car.data', text => {
     });
 
     // Initialization
-    // console.log(data);
-    render(data);
+    // Define the features and its order
+    var features = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety'];
+    render(data, features);
+
+    // ================== Interactivity ==================
+    // `reorder-controller`: use to get the new order after the user drag the items
+    const draggableContainers = document.querySelectorAll('.draggable');
+    let draggedItem = null;
+
+    // `array_swap`: swap the position of specific elements in array
+    function array_swap(arr, index1, index2) {
+        if (index1 < 0 || index1 >= arr.length || index2 < 0 || index2 >= arr.length) {
+            // Check the index is legal or not
+            console.error("Invalid index");
+            return arr;
+        };
+    
+        // Swap the elements
+        [arr[index1], arr[index2]] = [arr[index2], arr[index1]];
+        return arr;
+    };
+
+    // Add event listener
+    draggableContainers.forEach(container => {
+        container.addEventListener('dragstart', (event) => {
+            // record the dragging item
+            draggedItem = container;
+        });
+
+        container.addEventListener('dragover', (event) => {
+            container.style.background = 'lightgray';
+            event.preventDefault();
+        });
+
+        container.addEventListener('dragleave', (event) => {
+            container.style.background = '';
+        });
+
+        container.addEventListener('drop', () => {
+            // Change the position of the items
+            container.style.background = '';
+
+            // Swap the positions of the elements in the DOM
+            const temp = document.createElement('div');
+            draggedItem.parentNode.insertBefore(temp, draggedItem); // Add temp element before draggedItem
+            container.parentNode.insertBefore(draggedItem, container);
+            temp.parentNode.insertBefore(container, temp); // Add temp element before container
+            temp.parentNode.removeChild(temp); // Remove temp element
+
+            // Update the order of `features`: swap the positions of the elements in the features array
+            const fromIndex = features.indexOf(draggedItem.textContent.trim());
+            const toIndex = features.indexOf(container.textContent.trim());
+            array_swap(features, fromIndex, toIndex);
+
+            // Update the chart
+            svg.selectAll('g').remove();
+            render(data, features);
+        });
+    });
 });
 
 // Build the Stacked Bar Charts
@@ -33,10 +90,7 @@ const svg = d3.select('#sankey-diagram')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 // Render Function
-const render = (data) => {
-    // Define the features and its order
-    var features = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety'];
-    
+const render = (data, features) => {
     // Create `attributes` as the combination of each feature and class
     var combo = [];
     data.forEach(d => {
@@ -62,7 +116,7 @@ const render = (data) => {
     for (let i = 0; i < combo.length; i++) {
         nodes.push({'node': i, 'name': `${combo[i]}`});
     };
-    console.log(nodes);
+    // console.log(nodes);
 
     // Create `attributes`, each combination of features and categories
     var attributes = [];
@@ -93,7 +147,7 @@ const render = (data) => {
     
         return {source: sourceIndex, target: targetIndex, value};
     });
-    console.log(links);
+    // console.log(links);
 
     // Create a Sankey diagram
     const sankey = d3.sankey()
@@ -104,11 +158,16 @@ const render = (data) => {
     sankey.nodes(nodes)
         .links(links)
         .layout(1);
-
-    // Create `colorScale` to show different color on different combo
-    const colorScale = d3.scaleOrdinal()
-        .domain(features)
-        .range(d3.schemeCategory20);
+    
+    // Create `colorMapping`: avoid to change color by change the type order
+    const colorMapping = {
+        'buying': '#9ac8eb',
+        'maint': '#d9a7c7',
+        'doors': '#81C784',
+        'persons': '#f3c7d5',
+        'lug_boot': '#90A4AE',
+        'safety': '#f9c995',
+    };
 
     // Add in the links
     const link = svg.append('g')
@@ -119,8 +178,8 @@ const render = (data) => {
         .attr('class', 'link')
         .attr('d', sankey.link())
         .style('stroke', d => {
-            const sourceColor = colorScale(d.source.name.split('-')[0]);
-            const targetColor = colorScale(d.target.name.split('-')[0]);
+            const sourceColor = colorMapping[d.source.name.split('-')[0]];
+            const targetColor = colorMapping[d.target.name.split('-')[0]];
             // Use D3 interpolator to generate mixed colors
             const colorInterpolator = d3.interpolate(sourceColor, targetColor);
             return colorInterpolator(0.5); // Adjust the interpolation position to get a darker or lighter color
@@ -141,6 +200,7 @@ const render = (data) => {
                     this.parentNode.appendChild(this);
                 })
                 .on('drag', function(d, event) {
+                    // Add the function for moving nodes
                     d3.select(this)
                         .attr('transform', `translate(${d.x}, ${d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))})`);
                     sankey.relayout();
@@ -152,7 +212,7 @@ const render = (data) => {
     node.append('rect')
         .attr('height', d => d.dy)
         .attr('width', sankey.nodeWidth())
-        .style('fill', d => colorScale(d.name.split('-')[0]))
+        .style('fill', d => colorMapping[d.name.split('-')[0]])
         .style('stroke', '#000000')
         .append('title')
         .text(d => `${d.name}, ${d.node}`)
