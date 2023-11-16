@@ -4,11 +4,9 @@ Data Visualization and Visual Analytics(2023) at National Yang Ming Chiao Tung U
 
 ## Updates / Notes
 - 2023/11/16<br>
-  <span>
-    In `hw4`, the brushable scatter plot matrix should enable brushing to select data points in one cell and highlight them across all other cells.
-    <br>
-    ref: https://observablehq.com/@d3/brushable-scatterplot-matrix
-  </span>
+    - In `hw4`, the brushable scatter plot matrix should enable brushing to select data points in one cell and highlight them across all other cells.
+      > ref: https://observablehq.com/@d3/brushable-scatterplot-matrix
+    - No need to include the "overall_score" in `hw5`.
 
 ## Contents
 The following are homework topics, each accompanied by a demo link accessible only through the NYCU VPN.
