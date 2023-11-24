@@ -3,6 +3,9 @@ Data Visualization and Visual Analytics(2023) at National Yang Ming Chiao Tung U
 陽明交大多媒體所-資料視覺化與視覺分析<br>
 
 ## Updates / Notes
+- 2023/11/24<br>
+    - In `hw8`, TA’s feedback mentioned that "nodes should be able to drag arbitrarily, not only vertically, or switch the column via UI". <br>
+      ps: I think this is not very necessary, so I just offer this info. as a reference to those who take the course in the future.
 - 2023/11/16<br>
     - In `hw4`, the brushable scatter plot matrix should enable brushing to select data points in one cell and highlight them across all other cells.
       > ref: https://observablehq.com/@d3/brushable-scatterplot-matrix
