@@ -12,7 +12,7 @@ Data Visualization and Visual Analytics(2023) at National Yang Ming Chiao Tung U
     - No need to include the "overall_score" in `hw5`.
 
 ## Contents
-The following are homework topics, each accompanied by a demo link accessible only through the NYCU VPN.
+The following are homework topics, each accompanied by a demo link accessible only through the VPN or NYCU Internet.
 
 * **hw1:** [Scatter Plots](http://07a64078c8620018.vis.lab.djosix.com:2023/)
 * **hw2:** [Parallel Coordinate Plots](http://f8bc6939fa2af991.vis.lab.djosix.com:2023/)
