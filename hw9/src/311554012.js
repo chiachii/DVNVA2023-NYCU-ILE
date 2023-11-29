@@ -9,8 +9,11 @@ d3.csv('../data/spotify.csv').then(data => {
             svg.selectAll('g').remove();
             svg.selectAll('rect').remove();
             svg.selectAll('text').remove();
-            // console.log(data.filter(d => d.artist === inputValue));
-            render(data.filter(d => d.artist === inputValue));
+            if (inputValue.trim() !== '') {
+                render(data.filter(d => d.artist === inputValue));
+            } else {
+                render(data);
+            }
         }
     });
     
