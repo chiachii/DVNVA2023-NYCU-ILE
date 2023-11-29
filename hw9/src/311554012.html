@@ -22,13 +22,18 @@
                 <!-- main program -->
                 <div class="search-bar">
                     <div class="sb-icon"><i class="fa fa-search"></i></div>
-                    <input class="sb-input" id="sb-input" placeholder="Search the artist name"></input>
+                    <input class="sb-input" id="sb-input" placeholder="Search the artist / band name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search the artist name'"></input>
                 </div>
-                <div id="hist-v-tempo"></div>
-                <div id="hist-v-popularity"></div>
-                <div id="hist-v-genre"></div>
-                <div id="radar"></div>
-                <div id="hist-h-popularity"></div>
+                <br>
+                <div class="dp-infx">
+                    <div class="dw" id="barchart-v-tempo"></div>
+                    <div class="dw" id="barchart-v-popularity"></div>
+                    <div class="dw" id="barchart-v-genre"></div>
+                </div>
+                <div class="dp-infx">
+                    <div id="radar"></div>
+                    <div id="barchart-h-popularity"></div>
+                </div>
                 <script src="./311554012.js"></script>
             </div>
         </div>

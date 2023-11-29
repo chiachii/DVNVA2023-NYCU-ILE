@@ -35,6 +35,7 @@ body {
     position: relative;
     display: inline-flex;
     padding: 2px calc(0.5rem - 1px);
+    margin-bottom: 0.75rem;
 }
 .sb-icon {
     padding: 0 10px;
@@ -47,4 +48,17 @@ body {
 }
 input.sb-input:focus {
     outline-width: 0;
+}
+.dp-infx {
+    align-items: center;
+    display: inline-flex;
+    flex-wrap: wrap;
+}
+.dw {
+    width: 650px;
+    height: 300px;
+    padding: calc(0.5em - 1px) calc(0.5rem - 1px);
+    border: 0.1px solid;
+    border-radius: 4px;
+    margin: 0 0.75rem 0.75rem 0;
 }
