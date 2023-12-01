@@ -5,24 +5,24 @@ d3.csv('../data/spotify.csv').then(data => {
         if (event.key === 'Enter') {
             // Update the `inputValue`  
             var inputValue = event.target.value;
-            console.log('Input Value: ' + inputValue);
+            // console.log('Input Value: ' + inputValue);
             svg.selectAll('g').remove();
             svg.selectAll('rect').remove();
             svg.selectAll('text').remove();
             if (inputValue.trim() !== '') {
-                render(data.filter(d => d.artist === inputValue));
+                render_bc_tempo(data.filter(d => d.artist === inputValue));
             } else {
-                render(data);
+                render_bc_tempo(data);
             }
         }
     });
     
     // Initialization
     // console.log(data);
-    render(data);
+    render_bc_tempo(data);
 });
 
-// Build the Stacked Bar Charts
+// Build the Bar Chart
 // Define the SVG dimensions and margins 
 const margin = { top: 20, right: 10, bottom: 40, left: 50};
 const width = 650 - margin.left - margin.right;
@@ -36,9 +36,9 @@ const svg = d3.select('#barchart-v-tempo')
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-// Render Function
-const render = (data) => {
-    // Counting for corresponding `tempo` from data
+// Render Function: to draw a bar chart for 'tempo' vs. 'songs number'
+const render_bc_tempo = (data) => {
+    // Counting for corresponding 'tempo' from data
     const tempoOrder = ['Larghissimo', 'Grave', 'Largo', 'Larghetto', 'Adagio', 
                         'Andante', 'Moderato', 'Allegro', 'Presto', 'Prestissimo'];
     var tempoCounts = {};
