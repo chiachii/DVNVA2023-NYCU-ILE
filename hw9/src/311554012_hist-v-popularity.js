@@ -56,8 +56,8 @@ const render_hist_popularity = (data) => {
 
     // Y-axis: scale and draw
     var yScale = d3.scaleLinear()
-        .range([height, 0])
-        .domain([0, d3.max(bins, d => d.length)]);
+        .domain([0, d3.max(bins, d => d.length)])
+        .range([height, 0]);
     svg.append('g')
         .call(d3.axisLeft(yScale));
 
@@ -82,7 +82,7 @@ const render_hist_popularity = (data) => {
     // Create a color scale for popularitys
     const colorScale = d3.scaleOrdinal()
         .domain(Array.from(new Set(bins.map(d => d.x0))))
-        .range(["#0d0887","#46039f","#7201a8","#9c179e","#bd3786","#d8576b","#ed7953","#fb9f3a","#fdca26","#f0f921"]);
+        .range(["#fff0a9","#fee087","#fec965","#feab4b","#fd893c","#fa5c2e","#ec3023","#d31121","#af0225","#800026"]);
 
     // Create bar chart
     svg.selectAll('rect')
@@ -91,6 +91,6 @@ const render_hist_popularity = (data) => {
             .attr('x', 6)
         .attr('transform', d => `translate(${xScale(d.x0)}, ${yScale(d.length)})`)
         .attr('width', d => 0.8*(xScale(d.x1) - xScale(d.x0)))
-        .attr('height', d => height - yScale(d.length))
+        .attr('height', d => d.length > 0 ? height - yScale(d.length) : 0)
         .attr('fill', d => colorScale(d.x0));
 };
