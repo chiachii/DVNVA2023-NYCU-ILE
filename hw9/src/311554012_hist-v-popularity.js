@@ -13,8 +13,8 @@ d3.csv('../data/spotify.csv').then(data => {
                 render_hist_popularity(data.filter(d => d.artist === inputValue));
             } else {
                 render_hist_popularity(data);
-            }
-        }
+            };
+        };
     });
     
     // Initialization

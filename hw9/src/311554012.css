@@ -62,6 +62,23 @@ input.sb-input:focus {
     border-radius: 4px;
     margin: 0 0.75rem 0.75rem 0;
 }
+.dq {
+    width: 350px;
+    height: 300px;
+    padding: calc(0.5em - 1px) calc(0.5rem - 1px);
+    border: 0.1px solid;
+    border-radius: 4px;
+    margin: 0 0.75rem 0.75rem 0;
+}
+.dq-ov {
+    width: 950px;
+    height: 300px;
+    padding: calc(0.5em - 1px) calc(0.5rem - 1px);
+    border: 0.1px solid;
+    border-radius: 4px;
+    margin: 0 0.75rem 0.75rem 0;
+    overflow: auto;
+}
 .df-ov {
     width: 1327px;
     height: 300px;

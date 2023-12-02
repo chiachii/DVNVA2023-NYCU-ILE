@@ -33,8 +33,8 @@ d3.csv('../data/spotify.csv').then(data => {
                 render_bc_genre(data.filter(d => d.artist === inputValue), genreCounts);
             } else {
                 render_bc_genre(data, genreCounts);
-            }
-        }
+            };
+        };
     });
     
     // Initialization

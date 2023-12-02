@@ -13,8 +13,8 @@ d3.csv('../data/spotify.csv').then(data => {
                 render_bc_tempo(data.filter(d => d.artist === inputValue));
             } else {
                 render_bc_tempo(data);
-            }
-        }
+            };
+        };
     });
     
     // Initialization
