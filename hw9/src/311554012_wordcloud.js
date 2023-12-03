@@ -43,8 +43,10 @@ const render_wordcloud = (data) => {
     const words = track_names.map(name => {
         const values = data.filter(d => d.track_name === name).map(d => +d['popularity']);
         const mean = values.reduce((acc, value) => acc + value, 0) / values.length;
+        const artist = Array.from(new Set(data.filter(d => d.track_name === name).map(d => d['artist'])))[0];
         const tempo = Array.from(new Set(data.filter(d => d.track_name === name).map(d => d['tempo'])))[0];
-        return { text: name, size: +mean, tempo: tempo };
+        const genre = Array.from(new Set(data.filter(d => d.track_name === name).map(d => d['track_genre'])))[0];
+        return { text: name, size: +mean, popularity: +mean, tempo: tempo, genre: genre, artist: artist };
     });
 
     // Set up the layout
@@ -63,6 +65,16 @@ const render_wordcloud = (data) => {
 
     // Draw the word cloud
     function draw(words) {
+        // Create and initialize the tooltip
+        const tooltip = d3.select('#tooltip')
+            .style('position', 'absolute')
+            .style('background-color', 'white')
+            .style('border', '1px solid #ddd')
+            .style('border-radius', '4px')
+            .style('padding', '10px')
+            .style('display', 'none')
+            .style('font-size', '0.85rem');
+
         // Create a color scale for tempos
         const tempoOrder = ['Larghissimo', 'Grave', 'Largo', 'Larghetto', 'Adagio', 
                             'Andante', 'Moderato', 'Allegro', 'Presto', 'Prestissimo'];
@@ -79,6 +91,24 @@ const render_wordcloud = (data) => {
                 .attr("transform", d => `translate(${wordCloud_width/2 - 15 + d.x}, ${wordCloud_height/2 + 15 + d.y})rotate(${d.rotate})`)
                 .attr("text-anchor", "middle")
             .text(d => d.text)
-                .style('fill', d => colorScale(d.tempo));
+                .style('fill', d => colorScale(d.tempo))
+                .on('mouseover', (event, d) => {
+                    // Show the tooltip
+                    tooltip.style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 25) + 'px')
+                        .style('display', 'block')
+                        .html(`
+                            <strong style="color:${colorScale(d.tempo)}"> ${d.text} </strong>
+                            <hr />
+                            <li><span style="color:#333333"> Artist: ${d.artist} </span></li>
+                            <li><span style="color:#333333"> Tempo: ${d.tempo} </span></li>
+                            <li><span style="color:#333333"> Popularity: ${d.popularity} </span></li>
+                            <li><span style="color:#333333"> Genre: ${d.genre} </span></li>
+                        `);
+                })
+                .on('mouseout', () => {
+                    // Hide the tooltip
+                    tooltip.style('display', 'none');
+                });
     };
 };
