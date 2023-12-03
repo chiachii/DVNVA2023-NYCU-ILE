@@ -77,7 +77,7 @@ input.sb-input:focus {
     border: 0.1px solid;
     border-radius: 4px;
     margin: 0 0.75rem 0.75rem 0;
-    overflow: auto;
+    /* overflow: auto; */
 }
 .df-ov {
     width: 1327px;
