@@ -22,7 +22,7 @@ The following are homework topics, each accompanied by a demo link accessible on
 * **hw6:** [ThemeRiver](http://b01653a541cf91c8.vis.lab.djosix.com:2023/)
 * **hw7:** [Horizen Chart](http://1acd3031fc7cc05e.vis.lab.djosix.com:2023/)
 * **hw8:** [Sankey Diagram](http://f6996ddfcaadfe61.vis.lab.djosix.com:2023/)
-* **hw9:** Spotiy Tracks Dataset
+* **hw9:** [Spotiy Tracks Dataset](http://e5e583d584636df2.vis.lab.djosix.com:2023/)
 
 ## References
 [1] [Data Visualization with D3.js - Full Tutorial Course](https://www.youtube.com/watch?v=_8V5o2UHG0E)
