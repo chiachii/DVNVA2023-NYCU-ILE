@@ -93,4 +93,14 @@ const render_popularity = (data) => {
         .attr('width', d => 0.8*(xScale(d.x1) - xScale(d.x0)))
         .attr('height', d => d.length > 0 ? popularity_height - yScale(d.length) : 0)
         .attr('fill', d => colorScale(d.x0));
+    
+    // Add value label on the top of each rect
+    popularity_svg.selectAll('.valueLabel')
+        .data(bins)
+        .enter().append('text')
+        .text(d => d.length)
+        .attr('font-size', 10)
+        .attr('text-anchor', 'middle')
+        .attr('fill', d => colorScale(d.x0))
+        .attr('transform', d => `translate(${xScale(d.x0) + (xScale(d.x1) - xScale(d.x0))/2}, ${d.length > 0 ? yScale(d.length) - 5 : 0})`);
 };

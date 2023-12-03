@@ -108,7 +108,9 @@ const render_genre = (data, genreCounts) => {
     const colorScale = d3.scaleOrdinal()
         .domain(Object.keys(genre))
         .range(d3.quantize(d3.interpolateGnBu, 114).reverse());
-    console.log()
+    const valueLabel_colorScale = d3.scaleOrdinal()
+        .domain(Object.keys(genre))
+        .range(d3.quantize(d3.interpolateGreys, 114));
     // Create bar chart
     genre_svg.selectAll('rect')
         .data(data)
@@ -119,4 +121,14 @@ const render_genre = (data, genreCounts) => {
         .attr('width', d => xScale(genre[d.track_genre]))
         .attr('height', yScale.bandwidth())
         .attr('fill', d => colorScale(d.track_genre));
+    
+    // Add value label on the top of each rect
+    genre_svg.selectAll('.valueLabel')
+        .data(Object.keys(genre))
+        .enter().append('text')
+        .text(d => genre[d])
+        .attr('font-size', 10)
+        .attr('text-anchor', 'start')
+        .attr('fill', d => valueLabel_colorScale(d))
+        .attr('transform', d => `translate(${xScale(0)+55}, ${(yScale(d)+23) + yScale.bandwidth()/2})`);
 };

@@ -11,3 +11,5 @@ You are free to decide which idioms to use and how interactions to provide in yo
 [1] Liu, Y., Liu, G., Wei, D., Li, Q., Yuan, G., Wu, S., ... & Zhao, X. (2018). Effects of musical tempo on musicians’ and non-musicians’ emotional experience when listening to music. Frontiers in Psychology, 9, 2118.
 <br>
 [2] Tempo - Wikipedia (https://en.wikipedia.org/wiki/Tempo)
+<br>
+[3] Word cloud / D3 | Observable (https://observablehq.com/@d3/word-cloud)

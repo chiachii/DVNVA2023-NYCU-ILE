@@ -101,4 +101,14 @@ const render_tempo = (data) => {
         .attr('width', xScale.bandwidth(0))
         .attr('height', d => tempo_height - yScale(tempoCounts[d.tempo]))
         .attr('fill', d => colorScale(d.tempo));
+    
+    // Add value label on the top of each rect
+    tempo_svg.selectAll('.valueLabel')
+        .data(tempoOrder)
+        .enter().append('text')
+        .text(d => tempoCounts[d])
+        .attr('font-size', 10)
+        .attr('text-anchor', 'middle')
+        .attr('fill', d => colorScale(d))
+        .attr('transform', d => `translate(${xScale(d) + xScale.bandwidth(0)/2}, ${yScale(tempoCounts[d]) - 5})`);
 };
