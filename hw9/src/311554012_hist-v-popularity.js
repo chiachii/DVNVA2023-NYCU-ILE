@@ -102,5 +102,5 @@ const render_popularity = (data) => {
         .attr('font-size', 10)
         .attr('text-anchor', 'middle')
         .attr('fill', d => colorScale(d.x0))
-        .attr('transform', d => `translate(${xScale(d.x0) + (xScale(d.x1) - xScale(d.x0))/2}, ${d.length > 0 ? yScale(d.length) - 5 : 0})`);
+        .attr('transform', d => `translate(${xScale(d.x0) + (xScale(d.x1) - xScale(d.x0))/2}, ${yScale(d.length) - 5})`);
 };
