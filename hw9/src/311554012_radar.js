@@ -6,8 +6,8 @@ d3.csv('../data/spotify.csv').then(data => {
             // Update the `inputValue`  
             var inputValue = event.target.value;
             // Remove previous graph
-            svg.selectAll('g').remove();
-            svg.selectAll('.gridCircle').remove();
+            radar_svg.selectAll('g').remove();
+            radar_svg.selectAll('.gridCircle').remove();
             // Update the graph
             if (inputValue.trim() !== '') {
                 render_radar(data.filter(d => d.artist === inputValue));
@@ -24,17 +24,17 @@ d3.csv('../data/spotify.csv').then(data => {
 
 // Build the Radar chart
 // Define the SVG dimensions and margins 
-const margin = { top: 20, right: 10, bottom: 40, left: 50};
-const width = 350 - margin.left - margin.right;
-const height = 280 - margin.top - margin.bottom;
+const radar_margin = { top: 20, right: 10, bottom: 40, left: 50};
+const radar_width = 350 - radar_margin.left - radar_margin.right;
+const radar_height = 280 - radar_margin.top - radar_margin.bottom;
 
 // Create the SVG container
-const svg = d3.select('#radar')
+const radar_svg = d3.select('#radar')
     .append('svg')
     .attr('width', 350)
     .attr('height', 300)
     .append('g')
-    .attr('transform', `translate(${width/2 + 30}, ${height/2 + 40})`);
+    .attr('transform', `translate(${radar_width/2 + 30}, ${radar_height/2 + 40})`);
 
 // Render Function: to draw a bar chart for 'popularity' vs. 'songs name'
 const render_radar = (data) => {
@@ -50,7 +50,7 @@ const render_radar = (data) => {
     // Initialize for radar chart
     var allAxis = (radarData.map(function(i, j){return i.axis})),	// Names of each axis
 		total = allAxis.length,					// The number of different axes
-		radius = Math.min(width/2, height/2), 	// Radius of the outermost circle
+		radius = Math.min(radar_width/2, radar_height/2), 	// Radius of the outermost circle
 		angleSlice = Math.PI * 2 / total;		// The width in radians of each 'slice'
 
 	// Scale for the radius
@@ -59,7 +59,7 @@ const render_radar = (data) => {
 		.domain([0, 1]);
     
     // Draw the background circles
-	svg.selectAll('.levels')
+	radar_svg.selectAll('.levels')
         .data(d3.range(1, 6).reverse())
         .enter()
         .append('circle')
@@ -71,7 +71,7 @@ const render_radar = (data) => {
         .style('filter' , 'url(#glow)');
 
     // Text indicating at what % each level is
-	svg.selectAll('.axisLabel')
+	radar_svg.selectAll('.axisLabel')
         .data(d3.range(1, 6).reverse())
         .enter().append('text')
         .attr('class', 'axisLabel')
@@ -84,7 +84,7 @@ const render_radar = (data) => {
     
     // Draw the axis
     // Create the straight lines radiating outward from the center
-	var axis = svg.selectAll('.axis')
+	var axis = radar_svg.selectAll('.axis')
             .data(allAxis)
             .enter()
             .append('g')
@@ -115,7 +115,7 @@ const render_radar = (data) => {
         .radius(d => rScale(d.value))
         .angle((d, i) => i * angleSlice);
     // Create a wrapper for the blobs	
-	var blobWrapper = svg.selectAll('.radarWrapper')
+	var blobWrapper = radar_svg.selectAll('.radarWrapper')
         .data([radarData])
         .enter().append('g')
         .attr('class', 'radarWrapper');

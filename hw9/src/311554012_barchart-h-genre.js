@@ -1,6 +1,6 @@
 // Load the dataset
 d3.csv('../data/spotify.csv').then(data => {
-    // Define the `genreCounts`: for recording in `render_bc_genre()`,
+    // Define the `genreCounts`: for recording in `render_genre()`,
     // and `genreLabels`: all of class of `data.track_genre`
     const genreCounts = {};
     const genreLabels = Array.from(new Set(data.map(d => d.track_genre)));
@@ -17,9 +17,9 @@ d3.csv('../data/spotify.csv').then(data => {
             // Update the `inputValue`  
             var inputValue = event.target.value;
             // Remove previous graph
-            svg.selectAll('g').remove();
-            svg.selectAll('rect').remove();
-            svg.selectAll('text').remove();
+            genre_svg.selectAll('g').remove();
+            genre_svg.selectAll('rect').remove();
+            genre_svg.selectAll('text').remove();
             // Return `genreCounts` to Zero
             const genreCounts = {};
             const genreLabels = Array.from(new Set(data.map(d => d.track_genre)));
@@ -30,34 +30,34 @@ d3.csv('../data/spotify.csv').then(data => {
             });
             // Update the graph
             if (inputValue.trim() !== '') {
-                render_bc_genre(data.filter(d => d.artist === inputValue), genreCounts);
+                render_genre(data.filter(d => d.artist === inputValue), genreCounts);
             } else {
-                render_bc_genre(data, genreCounts);
+                render_genre(data, genreCounts);
             };
         };
     });
     
     // Initialization
     // console.log(data);
-    render_bc_genre(data, genreCounts);
+    render_genre(data, genreCounts);
 });
 
 // Build the Bar Chart
 // Define the SVG dimensions and margins 
-const margin = { top: 20, right: 10, bottom: 40, left: 50};
-const width = 1250 - margin.left - margin.right;
-const height = 3000 - margin.top - margin.bottom;
+const genre_margin = { top: 20, right: 10, bottom: 40, left: 50};
+const genre_width = 1250 - genre_margin.left - genre_margin.right;
+const genre_height = 3000 - genre_margin.top - genre_margin.bottom;
 
 // Create the SVG container
-const svg = d3.select('#barchart-h-genre')
+const genre_svg = d3.select('#barchart-h-genre')
     .append('svg')
     .attr('width', 1300)
     .attr('height', 3000)
     .append('g')
-    .attr('transform', `translate(${margin.left}, ${margin.top})`);
+    .attr('transform', `translate(${genre_margin.left}, ${genre_margin.top})`);
 
 // Render Function: to draw a bar chart for 'genre' vs. 'songs number'
-const render_bc_genre = (data, genreCounts) => {
+const render_genre = (data, genreCounts) => {
     // Counting for corresponding 'genre' from data
     data.forEach(d => {
         genreCounts[d.track_genre]++;
@@ -72,22 +72,22 @@ const render_bc_genre = (data, genreCounts) => {
     var maxCount = Math.max(...countsArray);
     var xScale = d3.scaleLinear()
         .domain([0, maxCount])
-        .range([0, width]);
-    svg.append('g')
+        .range([0, genre_width]);
+    genre_svg.append('g')
         .attr('transform', 'translate(50, 20)')
         .call(d3.axisTop(xScale));
 
     // Y-axis: scale and draw
     var yScale = d3.scaleBand()
         .domain(Object.keys(genre))
-        .range([0, height])
+        .range([0, genre_height])
         .padding(0.2);
-    svg.append('g')
+    genre_svg.append('g')
         .attr('transform', 'translate(50, 20)')
         .call(d3.axisLeft(yScale));
 
     // Add axis name at left and top sides
-    svg.selectAll('.y-axis-name') // Left side
+    genre_svg.selectAll('.y-axis-name') // Left side
         .data(['Genre'])
         .enter().append('text')
         .text(d => d)
@@ -95,13 +95,13 @@ const render_bc_genre = (data, genreCounts) => {
         .attr('text-anchor', 'end')
         .attr('transform', `translate(15, -8)`)
         .attr('class', 'axis-name');
-    svg.selectAll('.x-axis-name') // Top side
+    genre_svg.selectAll('.x-axis-name') // Top side
         .data(['Counts'])
         .enter().append('text')
         .text(d => d)
         .attr('font-size', 12)
         .attr('text-anchor', 'end')
-        .attr('transform', `translate(${(width+100)/2}, -8)`)
+        .attr('transform', `translate(${(genre_width+100)/2}, -8)`)
         .attr('class', 'axis-name');
 
     // Create a color scale for genres
@@ -110,7 +110,7 @@ const render_bc_genre = (data, genreCounts) => {
         .range(d3.quantize(d3.interpolateGnBu, 114).reverse());
     console.log()
     // Create bar chart
-    svg.selectAll('rect')
+    genre_svg.selectAll('rect')
         .data(data)
         .enter()
         .append('rect')

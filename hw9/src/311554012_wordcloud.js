@@ -55,7 +55,7 @@ const render_wordcloud = (data) => {
         .rotate(0)
         // .rotate(() => -0.5 * 30)  // Rotate words randomly
         .font('sans-serif')
-        .fontSize(d => Math.sqrt(d.size)*2+20)
+        .fontSize(d => Math.sqrt(d.size)*2+10)
         .on("end", draw);
 
     // Start the layout
