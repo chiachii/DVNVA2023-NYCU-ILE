@@ -48,7 +48,7 @@ const render_wordcloud = (data) => {
         const genre = Array.from(new Set(data.filter(d => d.track_name === name).map(d => d['track_genre'])))[0];
         return { text: name, size: +mean, popularity: +mean, tempo: tempo, genre: genre, artist: artist };
     });
-
+    console.log(data)
     // Set up the layout
     const layout = d3.layout.cloud()
         .size([wordCloud_width, wordCloud_height])
@@ -65,6 +65,7 @@ const render_wordcloud = (data) => {
 
     // Draw the word cloud
     function draw(words) {
+        console.log(words)
         // Create and initialize the tooltip
         const tooltip = d3.select('#tooltip')
             .style('position', 'absolute')
