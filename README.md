@@ -26,7 +26,7 @@ The following are homework topics, each accompanied by a demo link accessible on
 * **hw9:** [Spotiy Tracks Dataset](http://e5e583d584636df2.vis.lab.djosix.com:2023/)
 
 ### Final Project
-- Proposal Link: https://shorturl.at/bdlwG
+- Proposal Link: https://drive.google.com/file/d/10K3gyRTdHUGnkWYHPnCY4AuxwK5-sq67/view?usp=sharing
 - Repository: https://github.com/chiachii/CPBL2023-Cinderella-Season
 ## References
 [1] [Data Visualization with D3.js - Full Tutorial Course](https://www.youtube.com/watch?v=_8V5o2UHG0E)
