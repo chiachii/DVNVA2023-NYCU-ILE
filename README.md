@@ -12,6 +12,7 @@ Data Visualization and Visual Analytics(2023) at National Yang Ming Chiao Tung U
     - No need to include the "overall_score" in `hw5`.
 
 ## Contents
+### Homeworks
 The following are homework topics, each accompanied by a demo link accessible only through the VPN or NYCU Internet.
 
 * **hw1:** [Scatter Plots](http://07a64078c8620018.vis.lab.djosix.com:2023/)
@@ -24,5 +25,8 @@ The following are homework topics, each accompanied by a demo link accessible on
 * **hw8:** [Sankey Diagram](http://f6996ddfcaadfe61.vis.lab.djosix.com:2023/)
 * **hw9:** [Spotiy Tracks Dataset](http://e5e583d584636df2.vis.lab.djosix.com:2023/)
 
+### Final Project
+- Proposal Link: https://shorturl.at/bdlwG
+- Repository: https://github.com/chiachii/CPBL2023-Cinderella-Season
 ## References
 [1] [Data Visualization with D3.js - Full Tutorial Course](https://www.youtube.com/watch?v=_8V5o2UHG0E)
